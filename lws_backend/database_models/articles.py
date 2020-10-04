@@ -1,8 +1,8 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship
 
-from fastapi_test.database import Base
-from fastapi_test.models.icons import Icon
+from lws_backend.database import Base
+from lws_backend.models.icons import Icon
 
 
 class ArticleBase(Base):
