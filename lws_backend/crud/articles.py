@@ -23,4 +23,4 @@ def get_article_previews(db: Session, page_index: PageIndex, category: Category)
         article_previews = db.query(
             ArticlePreview).filter(article_preview_filter).all()
         return article_previews
-    return None
+    return []
