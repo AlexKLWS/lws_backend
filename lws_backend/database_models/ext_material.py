@@ -13,11 +13,8 @@ class ExtMaterialBase(DatabaseBaseModel):
     category = Column(Integer, default=0)
 
 
-class ExtMaterial(ExtMaterialBase):
-    url = Column(String)
-
-
 class ExtMaterialPreview(ExtMaterialBase):
     icon_id = Column(Integer, ForeignKey("icons.id"))
+    url = Column(String)
 
     icon = relationship("Icon", lazy="joined")
