@@ -19,4 +19,4 @@ def get_ext_material_previews(db: Session, page_index: PageIndex, category: Cate
         ext_material_previews = db.query(
             ExtMaterialPreview).filter(ext_material_preview_filter).all()
         return ext_material_previews
-    return None
+    return []
