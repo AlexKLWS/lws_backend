@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class Category(int, Enum):
+class Category(IntEnum):
     MISC = 0
     LIFE = 1
     CODE = 2
