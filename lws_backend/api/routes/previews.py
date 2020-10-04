@@ -1,19 +1,18 @@
-from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from lws_backend.database import Session, get_db
 from lws_backend.pydantic_models.category import Category
 from lws_backend.crud.page_index import get_page_index, get_pages_count
-from lws_backend.crud.previews import get_previews as get_previews_crud
+from lws_backend.crud.articles import get_article_previews
 
 router = APIRouter()
 
 
 @router.get("")
-async def get_previews(category: Category, page: Optional[int], db: Session = Depends(get_db)):
-    p = page if page is not None else 1
-
-    page_index = get_page_index(db, p, category)
+async def get_previews(category: Category, page: int = 1, db: Session = Depends(get_db)):
+    page_index = get_page_index(db, page, category)
     page_count = get_pages_count(db, category)
 
-    return get_previews_crud(db, page_index, category)
+    previews = get_article_previews(db, page_index, category)
+
+    return {"previews": previews, "page_count": page_count}

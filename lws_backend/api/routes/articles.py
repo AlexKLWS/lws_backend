@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("")
 async def get_article(id: str, db: Session = Depends(get_db)):
-    article = get_article_by_id(id, db)
+    article = get_article_by_id(db, id)
     if article is None:
         raise HTTPException(status_code=404, detail="Article not found")
     return article
