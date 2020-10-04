@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, T
 from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
-from lws_backend.models.icons import Icon
+from lws_backend.database_models.icons import Icon
 
 
 class ArticleBase(Base):
