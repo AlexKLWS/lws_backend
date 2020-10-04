@@ -23,6 +23,6 @@ class Article(ArticleBase):
 
 
 class ArticlePreview(ArticleBase):
-    icon_id = Column(Integer, ForeignKey("icon.id"))
+    icon_id = Column(Integer, ForeignKey("icons.id"))
 
     icon = relationship("Icon", lazy="joined")
