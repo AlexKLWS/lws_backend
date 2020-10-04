@@ -15,9 +15,7 @@ def get_previews(db: Session, page_index: PageIndex, category: Category):
     else:
         article_preview_filter = and_(ArticlePreview.created_at >= page_index.end_date, ArticlePreview.created_at <= page_index.start_date, ArticlePreview.category ==
                                       category.value) if category != Category.MISC else and_(ArticlePreview.created_at >= page_index.end_date, ArticlePreview.created_at <= page_index.start_date)
-    print("Printing article_preview_filter: \n")
-    print(article_preview_filter)
-    print("\n")
+
     if article_preview_filter is not None:
         article_previews = db.query(
             ArticlePreview).filter(article_preview_filter).all()

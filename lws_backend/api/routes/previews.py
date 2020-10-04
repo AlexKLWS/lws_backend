@@ -11,11 +11,9 @@ router = APIRouter()
 
 @router.get("")
 async def get_previews(category: Category, page: Optional[int], db: Session = Depends(get_db)):
-    c = category
     p = page if page is not None else 1
 
-    page_index = get_page_index(db, p, c)
-    page_count = get_pages_count(db, c)
-    print(f"Page count {page_count}")
+    page_index = get_page_index(db, p, category)
+    page_count = get_pages_count(db, category)
 
-    return get_previews_crud(db, page_index, c)
+    return get_previews_crud(db, page_index, category)
