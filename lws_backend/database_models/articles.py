@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from lws_backend.database_models.base import DatabaseBaseModel
+from lws_backend.database_models.icons import Icon
 
 
 class ArticleBase(DatabaseBaseModel):
@@ -20,4 +21,4 @@ class Article(ArticleBase):
 class ArticlePreview(ArticleBase):
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
-    icon = relationship("Icon", lazy="joined")
+    icon = relationship(Icon, lazy="joined")
