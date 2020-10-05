@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, DateTime
 
 from lws_backend.database_models.base import DatabaseBaseModel
 

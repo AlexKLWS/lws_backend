@@ -1,4 +1,4 @@
-from typing import Tuple, Callable
+from typing import Tuple
 from fastapi import FastAPI
 
 from lws_backend.core.config import (
