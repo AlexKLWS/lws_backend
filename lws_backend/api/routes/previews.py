@@ -16,10 +16,15 @@ async def get_previews(
     page_index = get_page_index(db, page, category)
     page_count = get_pages_count(db, category)
 
+    previews = []
     article_previews = get_article_previews(db, page_index, category)
-    ext_materials_previews = get_ext_material_previews(db, page_index, category)
+    for p in article_previews:
+        previews.append(p.get_transferable())
 
-    previews = article_previews + ext_materials_previews
-    previews.sort(key=lambda p: p.created_at, reverse=True)
+    ext_materials_previews = get_ext_material_previews(db, page_index, category)
+    for p in ext_materials_previews:
+        previews.append(p.get_transferable())
+
+    previews.sort(key=lambda p: p["createdAt"], reverse=True)
 
     return {"previews": previews, "page_count": page_count}
