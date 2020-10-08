@@ -13,12 +13,31 @@ class ArticleBase(DatabaseBaseModel):
     subtitle = Column(String)
     category = Column(Integer, default=0)
 
+    def get_transferable(self):
+        return {
+            "createdAt": self.created_at,
+            "referenceId": self.reference_id,
+            "name": self.name,
+            "subtitle": self.subtitle,
+            "category": self.category,
+        }
+
 
 class Article(ArticleBase):
     article_text = Column(Text)
+
+    def get_transferable(self):
+        transferable = super().get_transferable()
+        transferable["articleText"] = self.article_text
+        return transferable
 
 
 class ArticlePreview(ArticleBase):
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
     icon = relationship(Icon, lazy="joined")
+
+    def get_transferable(self):
+        transferable = super().get_transferable()
+        transferable["icon"] = self.icon.get_transferable()
+        return transferable

@@ -9,3 +9,10 @@ class Icon(DatabaseBaseModel):
     data = Column(String)
     height = Column(String)
     width = Column(String)
+
+    def get_transferable(self):
+        return {
+            "data": self.data,
+            "height": self.height,
+            "width": self.width
+        }
