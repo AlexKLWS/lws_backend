@@ -13,7 +13,7 @@ class ArticleBase(DatabaseBaseModel):
     subtitle = Column(String)
     category = Column(Integer, default=0)
 
-    def get_transferable(self):
+    def get_jsonified_dict(self):
         return {
             "createdAt": self.created_at,
             "referenceId": self.reference_id,
@@ -26,8 +26,8 @@ class ArticleBase(DatabaseBaseModel):
 class Article(ArticleBase):
     article_text = Column(Text)
 
-    def get_transferable(self):
-        transferable = super().get_transferable()
+    def get_jsonified_dict(self):
+        transferable = super().get_jsonified_dict()
         transferable["articleText"] = self.article_text
         return transferable
 
@@ -37,7 +37,7 @@ class ArticlePreview(ArticleBase):
 
     icon = relationship(Icon, lazy="joined")
 
-    def get_transferable(self):
-        transferable = super().get_transferable()
-        transferable["icon"] = self.icon.get_transferable()
+    def get_jsonified_dict(self):
+        transferable = super().get_jsonified_dict()
+        transferable["icon"] = self.icon.get_jsonified_dict()
         return transferable

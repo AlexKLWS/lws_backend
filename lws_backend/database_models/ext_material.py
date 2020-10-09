@@ -14,7 +14,7 @@ class ExtMaterialBase(DatabaseBaseModel):
     category = Column(Integer, default=0)
     url = Column(String)
 
-    def get_transferable(self):
+    def get_jsonified_dict(self):
         return {
             "createdAt": self.created_at,
             "referenceId": self.reference_id,
@@ -30,7 +30,7 @@ class ExtMaterialPreview(ExtMaterialBase):
 
     icon = relationship(Icon, lazy="joined")
 
-    def get_transferable(self):
-        transferable = super().get_transferable()
-        transferable["icon"] = self.icon.get_transferable()
+    def get_jsonified_dict(self):
+        transferable = super().get_jsonified_dict()
+        transferable["icon"] = self.icon.get_jsonified_dict()
         return transferable

@@ -10,7 +10,7 @@ class Icon(DatabaseBaseModel):
     height = Column(String)
     width = Column(String)
 
-    def get_transferable(self):
+    def get_jsonified_dict(self):
         return {
             "data": self.data,
             "height": self.height,

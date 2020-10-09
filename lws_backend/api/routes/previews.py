@@ -19,11 +19,11 @@ async def get_previews(
     previews = []
     article_previews = get_article_previews(db, page_index, category)
     for p in article_previews:
-        previews.append(p.get_transferable())
+        previews.append(p.get_jsonified_dict())
 
     ext_materials_previews = get_ext_material_previews(db, page_index, category)
     for p in ext_materials_previews:
-        previews.append(p.get_transferable())
+        previews.append(p.get_jsonified_dict())
 
     previews.sort(key=lambda p: p["createdAt"], reverse=True)
 
