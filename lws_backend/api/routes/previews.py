@@ -5,11 +5,12 @@ from lws_backend.pydantic_models.category import Category
 from lws_backend.crud.page_index import get_page_index, get_pages_count
 from lws_backend.crud.articles import get_article_previews
 from lws_backend.crud.ext_materials import get_ext_material_previews
+from lws_backend.pydantic_models.preview import PreviewResponse
 
 router = APIRouter()
 
 
-@router.get("")
+@router.get("", response_model=PreviewResponse)
 async def get_previews(
     category: Category, page: int = 1, db: Session = Depends(get_db)
 ):
@@ -27,4 +28,4 @@ async def get_previews(
 
     previews.sort(key=lambda p: p["createdAt"], reverse=True)
 
-    return {"previews": previews, "page_count": page_count}
+    return {"previews": previews, "pageCount": page_count}
