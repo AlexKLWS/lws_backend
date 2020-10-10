@@ -23,15 +23,6 @@ class ArticleBase(DatabaseBaseModel):
         }
 
 
-class Article(ArticleBase):
-    article_text = Column(Text)
-
-    def get_jsonified_dict(self):
-        transferable = super().get_jsonified_dict()
-        transferable["articleText"] = self.article_text
-        return transferable
-
-
 class ArticlePreview(ArticleBase):
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
@@ -40,4 +31,13 @@ class ArticlePreview(ArticleBase):
     def get_jsonified_dict(self):
         transferable = super().get_jsonified_dict()
         transferable["icon"] = self.icon.get_jsonified_dict()
+        return transferable
+
+
+class Article(ArticlePreview):
+    article_text = Column(Text)
+
+    def get_jsonified_dict(self):
+        transferable = super().get_jsonified_dict()
+        transferable["articleText"] = self.article_text
         return transferable
