@@ -1,29 +1,32 @@
 from typing import Tuple
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from lws_backend.core.config import (
-    Config,
     VERSION,
     IS_DEBUG,
     DB_CONNECTION_URI,
     API_PREFIX,
 )
-from lws_backend.mounts.frontend import frontend
 from lws_backend.database import prepare_database
 from lws_backend.api.routes import api
+from lws_backend.config import config
+
+origins = [
+    "http://localhost:3000",
+]
 
 
-def get_application() -> Tuple[FastAPI, Config]:
-    config = Config(__file__)
-    config.setup()
-
+def get_application() -> FastAPI:
     prepare_database(config.get(DB_CONNECTION_URI))
 
     main = FastAPI(version=config.get(VERSION), debug=config.get(IS_DEBUG))
     main.include_router(api.router, prefix=API_PREFIX)
-    main.mount("/", app=frontend)
+
+    main.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
+                        allow_methods=["*"], allow_headers=["*"],)
 
     return main, config
 
 
-app, config = get_application()
+app = get_application()

@@ -6,7 +6,7 @@ from jose import jwt
 
 from lws_backend.pydantic_models.token import Token
 from lws_backend.database import Session, get_db
-from lws_backend.main import config
+from lws_backend.config import config
 from lws_backend.core.config import JWT_ENCODE_SECRET_KEY, ALGORITHM, TOKEN_LIFETIME
 from lws_backend.core.verify_password import verify_password
 from lws_backend.crud.users import get_user_by_username
