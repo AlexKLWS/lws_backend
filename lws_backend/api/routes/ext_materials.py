@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from lws_backend.database import Session, get_db
 from lws_backend.crud.ext_materials import get_ext_material_by_id
-from lws_backend.pydantic_models.ext_material import ExtMaterial
+from lws_backend.pydantic_models.ext_materials import ExtMaterial
 
 router = APIRouter()
 

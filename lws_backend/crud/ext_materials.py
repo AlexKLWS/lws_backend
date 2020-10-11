@@ -4,7 +4,7 @@ from sqlalchemy import and_
 from lws_backend.database import Session
 from lws_backend.pydantic_models.category import Category
 from lws_backend.database_models.page_index import PageIndex
-from lws_backend.database_models.ext_material import ExtMaterial
+from lws_backend.database_models.ext_materials import ExtMaterial
 
 
 def get_ext_material_by_id(db: Session, id: str) -> ExtMaterial:
