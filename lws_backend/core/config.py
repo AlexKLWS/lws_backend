@@ -11,6 +11,7 @@ from watchdog.events import FileSystemEventHandler
 # Consts
 CONFIG_FILE_NAME = "config.yaml"
 API_PREFIX = "/api"
+ALGORITHM = "HS256"
 
 # Keys
 ENV = "env"
@@ -20,6 +21,7 @@ TOKEN_LIFETIME = "token-lifetime"
 PAGE_SIZE = "page-size"
 ALLOWED_LOGIN_PASSWORDS = "allowed-passwords"
 DB_CONNECTION_URI = "db-connection-uri"
+JWT_ENCODE_SECRET_KEY = "jwt-encode-secret-key"
 VERSION = "version"
 
 # Configuration
