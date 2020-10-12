@@ -498,6 +498,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "uuid"
+version = "1.30"
+description = "UUID object and generation functions (Python 2.3 or higher)"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "uvicorn"
 version = "0.12.1"
 description = "The lightning-fast ASGI server."
@@ -529,7 +537,7 @@ watchmedo = ["PyYAML (>=3.10)", "argh (>=0.24.1)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0444fa0e34d5516c00b4599b8e52678c2486c02604370bec9425eb5976283280"
+content-hash = "d85cc54ad7cd552f3f7fef91fc8c27d506f0535a10aaa64d40a6aeeed26e9d9f"
 
 [metadata.files]
 aiofiles = [
@@ -892,6 +900,9 @@ typing-extensions = [
     {file = "typing_extensions-3.7.4.3-py2-none-any.whl", hash = "sha256:dafc7639cde7f1b6e1acc0f457842a83e722ccca8eef5270af2d74792619a89f"},
     {file = "typing_extensions-3.7.4.3-py3-none-any.whl", hash = "sha256:7cb407020f00f7bfc3cb3e7881628838e69d8f3fcab2f64742a5e76b2f841918"},
     {file = "typing_extensions-3.7.4.3.tar.gz", hash = "sha256:99d4073b617d30288f569d3f13d2bd7548c3a7e4c8de87db09a9d29bb3a4a60c"},
+]
+uuid = [
+    {file = "uuid-1.30.tar.gz", hash = "sha256:1f87cc004ac5120466f36c5beae48b4c48cc411968eed0eaecd3da82aa96193f"},
 ]
 uvicorn = [
     {file = "uvicorn-0.12.1-py3-none-any.whl", hash = "sha256:d06a25caa8dc680ad92eb3ec67363f5281c092059613a1cc0100acba37fc0f45"},
