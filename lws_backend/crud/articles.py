@@ -5,6 +5,7 @@ from lws_backend.database import Session
 from lws_backend.pydantic_models.category import Category
 from lws_backend.database_models.page_index import PageIndex
 from lws_backend.database_models.articles import Article, ArticlePreview
+from lws_backend.pydantic_models.article import Article as ArticleJsonified
 
 
 def get_article_by_id(db: Session, id: str) -> Article:
@@ -42,3 +43,14 @@ def get_article_previews(
         article_previews = db.query(ArticlePreview).filter(article_preview_filter).all()
         return article_previews
     return []
+
+
+def upsert_article(db: Session, article_jsonified: ArticleJsonified):
+    article = Article().from_jsonified_dict(article_jsonified)
+    existing_record = db.query(Article).filter(Article.reference_id == article_jsonified.referenceId).first()
+    if existing_record is not None:
+        article.id = existing_record.id
+        db.merge(article)
+    else:
+        db.add(article)
+    db.commit()
