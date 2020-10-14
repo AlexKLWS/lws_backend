@@ -26,4 +26,4 @@ async def check_user_auth(token: str = Depends(oauth2_scheme), db: Session = Dep
     user = get_user_by_username(db, username)
     if user is None:
         raise credentials_exception
-    return user
+    return user.access
