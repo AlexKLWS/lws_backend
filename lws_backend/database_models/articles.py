@@ -1,5 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 
 from lws_backend.database_models.base import DatabaseBaseModel
 from lws_backend.database_models.icons import Icon
