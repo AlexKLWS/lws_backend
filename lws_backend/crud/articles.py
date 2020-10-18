@@ -20,23 +20,23 @@ def get_article_previews(
     if page_index.page == 1:
         article_preview_filter = (
             and_(
-                ArticlePreview.created_at >= page_index.end_date,
+                ArticlePreview.created_at >= page_index.start_date,
                 ArticlePreview.category == category.value,
             )
             if category != Category.MISC
-            else and_(ArticlePreview.created_at >= page_index.end_date)
+            else and_(ArticlePreview.created_at >= page_index.start_date)
         )
     else:
         article_preview_filter = (
             and_(
-                ArticlePreview.created_at >= page_index.end_date,
-                ArticlePreview.created_at <= page_index.start_date,
+                ArticlePreview.created_at >= page_index.start_date,
+                ArticlePreview.created_at <= page_index.end_date,
                 ArticlePreview.category == category.value,
             )
             if category != Category.MISC
             else and_(
-                ArticlePreview.created_at >= page_index.end_date,
-                ArticlePreview.created_at <= page_index.start_date,
+                ArticlePreview.created_at >= page_index.start_date,
+                ArticlePreview.created_at <= page_index.end_date,
             )
         )
 

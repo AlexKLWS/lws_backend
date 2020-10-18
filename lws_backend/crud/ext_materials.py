@@ -20,23 +20,23 @@ def get_ext_material_previews(
     if page_index.page == 1:
         ext_material_preview_filter = (
             and_(
-                ExtMaterial.created_at >= page_index.end_date,
+                ExtMaterial.created_at >= page_index.start_date,
                 ExtMaterial.category == category.value,
             )
             if category != Category.MISC
-            else and_(ExtMaterial.created_at >= page_index.end_date)
+            else and_(ExtMaterial.created_at >= page_index.start_date)
         )
     else:
         ext_material_preview_filter = (
             and_(
-                ExtMaterial.created_at >= page_index.end_date,
-                ExtMaterial.created_at <= page_index.start_date,
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.created_at <= page_index.end_date,
                 ExtMaterial.category == category.value,
             )
             if category != Category.MISC
             else and_(
-                ExtMaterial.created_at >= page_index.end_date,
-                ExtMaterial.created_at <= page_index.start_date,
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.created_at <= page_index.end_date,
             )
         )
 
