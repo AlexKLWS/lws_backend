@@ -59,6 +59,7 @@ def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonifie
             existing_icon_record.from_jsonified_dict(ext_material_jsonified.icon)
         else:
             ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
+            ext_material.icon = Icon().from_jsonified_dict(ext_material_jsonified.icon)
             db.add(ext_material)
         db.commit()
     except:

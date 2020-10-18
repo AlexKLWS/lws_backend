@@ -56,6 +56,7 @@ def upsert_article(db: Session, article_jsonified: ArticleJsonified):
             existing_icon_record.from_jsonified_dict(article_jsonified.icon)
         else:
             article = Article().from_jsonified_dict(article_jsonified)
+            article.icon = Icon().from_jsonified_dict(article_jsonified.icon)
             db.add(article)
         db.commit()
     except:
