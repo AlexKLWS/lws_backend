@@ -15,6 +15,9 @@ async def get_previews(
     category: Category, page: int = 1, db: Session = Depends(get_db)
 ):
     page_index = get_page_index(db, page, category)
+    if page_index is None:
+        return {"previews": [], "pageCount": 1}
+
     page_count = get_pages_count(db, category)
 
     previews = []
