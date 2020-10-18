@@ -5,6 +5,7 @@ from lws_backend.database import Session
 from lws_backend.pydantic_models.category import Category
 from lws_backend.database_models.page_index import PageIndex
 from lws_backend.database_models.ext_materials import ExtMaterial
+from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.ext_materials import ExtMaterial as ExtMaterialJsonified
 
 
@@ -48,12 +49,14 @@ def get_ext_material_previews(
 
 
 def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonified):
-    ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
     existing_record = db.query(ExtMaterial).filter(ExtMaterial.reference_id ==
                                                    ext_material_jsonified.referenceId).first()
     if existing_record is not None:
-        ext_material.id = existing_record.id
-        db.merge(ext_material)
+        existing_record.from_jsonified_dict(ext_material_jsonified)
+        existing_icon_record = db.query(Icon).filter(Icon.id ==
+                                                     existing_record.icon_id).first()
+        existing_icon_record.from_jsonified_dict(ext_material_jsonified.icon)
     else:
+        ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
         db.add(ext_material)
     db.commit()
