@@ -37,6 +37,4 @@ class ExtMaterial(DatabaseBaseModel):
         self.url = e.url
         if e.createdAt is not None:
             self.created_at = e.createdAt
-        if e.icon is not None:
-            self.icon = Icon().from_jsonified_dict(e.icon)
         return self

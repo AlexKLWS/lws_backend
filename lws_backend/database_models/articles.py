@@ -45,8 +45,6 @@ class ArticlePreview(ArticleBase):
 
     def from_jsonified_dict(self, a: ArticleJsonified):
         super().from_jsonified_dict(a)
-        if a.icon is not None:
-            self.icon = Icon().from_jsonified_dict(a.icon)
         return self
 
 
