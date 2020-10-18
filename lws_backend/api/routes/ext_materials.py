@@ -4,8 +4,10 @@ import uuid
 from lws_backend.database import Session, get_db
 from lws_backend.crud.ext_materials import get_ext_material_by_id, upsert_ext_material
 from lws_backend.pydantic_models.ext_materials import ExtMaterial
+from lws_backend.pydantic_models.category import Category
 from lws_backend.api.dependencies.authorization import check_user_auth
 from lws_backend.pydantic_models.user_access_rights import UserAccessRights
+from lws_backend.crud.page_index import update_index
 
 router = APIRouter()
 
@@ -27,4 +29,9 @@ async def add_or_update_article(ext_material: ExtMaterial, db: Session = Depends
     if ext_material.referenceId is None:
         ext_material.referenceId = str(uuid.uuid4())
     upsert_ext_material(db, ext_material)
+
+    update_index(db, Category.MISC)
+    if ext_material.category != Category.MISC:
+        update_index(db, ext_material.category)
+
     return ext_material
