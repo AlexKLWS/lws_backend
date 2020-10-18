@@ -47,13 +47,19 @@ def get_article_previews(
 
 
 def upsert_article(db: Session, article_jsonified: ArticleJsonified):
-    existing_record = db.query(Article).filter(Article.reference_id == article_jsonified.referenceId).first()
-    if existing_record is not None:
-        existing_record.from_jsonified_dict(article_jsonified)
-        existing_icon_record = db.query(Icon).filter(Icon.id ==
-                                                     existing_record.icon_id).first()
-        existing_icon_record.from_jsonified_dict(article_jsonified.icon)
-    else:
-        article = Article().from_jsonified_dict(article_jsonified)
-        db.add(article)
-    db.commit()
+    try:
+        existing_record = db.query(Article).filter(Article.reference_id == article_jsonified.referenceId).first()
+        if existing_record is not None:
+            existing_record.from_jsonified_dict(article_jsonified)
+            existing_icon_record = db.query(Icon).filter(Icon.id ==
+                                                         existing_record.icon_id).first()
+            existing_icon_record.from_jsonified_dict(article_jsonified.icon)
+        else:
+            article = Article().from_jsonified_dict(article_jsonified)
+            db.add(article)
+        db.commit()
+    except:
+        db.rollback()
+        raise
+    finally:
+        db.close()

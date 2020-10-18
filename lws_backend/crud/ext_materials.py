@@ -49,14 +49,20 @@ def get_ext_material_previews(
 
 
 def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonified):
-    existing_record = db.query(ExtMaterial).filter(ExtMaterial.reference_id ==
-                                                   ext_material_jsonified.referenceId).first()
-    if existing_record is not None:
-        existing_record.from_jsonified_dict(ext_material_jsonified)
-        existing_icon_record = db.query(Icon).filter(Icon.id ==
-                                                     existing_record.icon_id).first()
-        existing_icon_record.from_jsonified_dict(ext_material_jsonified.icon)
-    else:
-        ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
-        db.add(ext_material)
-    db.commit()
+    try:
+        existing_record = db.query(ExtMaterial).filter(ExtMaterial.reference_id ==
+                                                       ext_material_jsonified.referenceId).first()
+        if existing_record is not None:
+            existing_record.from_jsonified_dict(ext_material_jsonified)
+            existing_icon_record = db.query(Icon).filter(Icon.id ==
+                                                         existing_record.icon_id).first()
+            existing_icon_record.from_jsonified_dict(ext_material_jsonified.icon)
+        else:
+            ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
+            db.add(ext_material)
+        db.commit()
+    except:
+        db.rollback()
+        raise
+    finally:
+        db.close()
