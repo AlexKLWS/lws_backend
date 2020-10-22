@@ -32,7 +32,7 @@ async def add_files(referenceId: str = Form(...), file: UploadFile = File(...),
 
     file_metadata = pop_file_metadata(referenceId)
     dir = ASSETS_PATH
-    if not file_metadata.folder:
+    if file_metadata.folder:
         dir = os.path.join(dir, file_metadata.folder)
         if not os.path.exists(dir):
             os.makedirs(dir, exist_ok=True)
