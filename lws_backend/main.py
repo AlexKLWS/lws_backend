@@ -7,6 +7,9 @@ from lws_backend.core.config import (
     IS_DEBUG,
     DB_CONNECTION_URI,
     API_PREFIX,
+    ASSETS_PREFIX,
+    ASSETS_PATH,
+    CLIENT_PATH
 )
 from lws_backend.database import prepare_database
 from lws_backend.api.routes import api
@@ -28,13 +31,13 @@ def get_application() -> FastAPI:
     main.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
                         allow_methods=["*"], allow_headers=["*"],)
 
-    if not os.path.exists("assets"):
-        os.mkdir("assets")
-    main.mount("/assets", StaticFiles(directory="assets"))
+    if not os.path.exists(ASSETS_PATH):
+        os.mkdir(ASSETS_PATH)
+    main.mount(ASSETS_PREFIX, StaticFiles(directory=ASSETS_PATH))
 
-    if not os.path.exists("client"):
-        os.mkdir("client")
-    main.mount("/", StaticFiles(directory="client"))
+    if not os.path.exists(CLIENT_PATH):
+        os.mkdir(CLIENT_PATH)
+    main.mount("/", StaticFiles(directory=CLIENT_PATH))
 
     return main
 
@@ -46,5 +49,5 @@ app = get_application()
 async def redirect_to_index(request, call_next):
     response = await call_next(request)
     if response.status_code == 404:
-        return FileResponse("client/index.html")
+        return FileResponse(os.path.join(CLIENT_PATH, "index.html"))
     return response

@@ -11,6 +11,9 @@ from watchdog.events import FileSystemEventHandler
 # Consts
 CONFIG_FILE_NAME = "config.yaml"
 API_PREFIX = "/api"
+ASSETS_PREFIX = "/assets"
+ASSETS_PATH = "assets"
+CLIENT_PATH = "client"
 ALGORITHM = "HS256"
 
 # Keys
