@@ -38,7 +38,7 @@ async def add_files(referenceId: str = Form(...), file: UploadFile = File(...),
             os.makedirs(dir, exist_ok=True)
 
     file_format = file.filename.split(".")[-1]
-    file_name = file_metadata.newName + "." + file_format if file_metadata.newName is not None else file.filename
+    file_name = file_metadata.newName + "." + file_format if file_metadata.newName else file.filename
 
     file_path = os.path.join(dir, file_name)
 
