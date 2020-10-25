@@ -22,8 +22,8 @@ async def get_ext_material(id: str, db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=ExtMaterial)
-async def add_or_update_article(ext_material: ExtMaterial, db: Session = Depends(get_db),
-                                access_rights=Depends(check_user_auth)):
+async def add_or_update_ext_material(ext_material: ExtMaterial, db: Session = Depends(get_db),
+                                     access_rights=Depends(check_user_auth)):
     if access_rights != UserAccessRights.WRITE:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't have required access rights")
     if ext_material.referenceId is None:
