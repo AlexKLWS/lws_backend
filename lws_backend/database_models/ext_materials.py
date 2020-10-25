@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from lws_backend.database_models.base import DatabaseBaseModel
 from lws_backend.database_models.icons import Icon
-from lws_backend.pydantic_models.ext_materials import ExtMaterial as ExtMaterialJsonified
+from lws_backend.pydantic_models.ext_material import ExtMaterial as ExtMaterialJsonified
 
 
 class ExtMaterial(DatabaseBaseModel):

@@ -3,7 +3,7 @@ import uuid
 
 from lws_backend.database import Session, get_db
 from lws_backend.crud.ext_materials import get_ext_material_by_id, upsert_ext_material
-from lws_backend.pydantic_models.ext_materials import ExtMaterial
+from lws_backend.pydantic_models.ext_material import ExtMaterial
 from lws_backend.pydantic_models.category import Category
 from lws_backend.api.dependencies.authorization import check_user_auth
 from lws_backend.pydantic_models.user_access_rights import UserAccessRights
