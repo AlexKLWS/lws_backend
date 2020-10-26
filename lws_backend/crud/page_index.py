@@ -3,6 +3,7 @@ from sqlalchemy import and_
 from lws_backend.pydantic_models.category import Category
 from lws_backend.database_models.page_index import PageIndex
 from lws_backend.database_models.articles import Article
+from lws_backend.database_models.guides import Guide
 from lws_backend.database_models.ext_materials import ExtMaterial
 from lws_backend.config import config
 from lws_backend.core.config import PAGE_SIZE
@@ -34,6 +35,10 @@ def update_index(db: Session, category: Category):
         ExtMaterial.id, ExtMaterial.created_at).filter(ExtMaterial.category == category.value)
     for e in ext_materials:
         all_materials.append(e)
+
+    guides = db.query(Guide.id, Guide.created_at)
+    for g in guides:
+        all_materials.append(g)
 
     all_materials.sort(key=lambda m: m.created_at, reverse=True)
 
