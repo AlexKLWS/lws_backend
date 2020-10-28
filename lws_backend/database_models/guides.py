@@ -53,9 +53,11 @@ class Guide(GuidePreview):
     locations = relationship(GuideLocationInfo, lazy="joined")
     default_zoom = Column(Integer)
     default_center = Column(JSON)
+    info = Column(String)
 
     def get_jsonified_dict(self):
         transferable = super().get_jsonified_dict()
+        transferable["info"] = self.info
         transferable["defaultZoom"] = self.default_zoom
         transferable["defaultCenter"] = self.default_center
         transferable["locations"] = [location.get_jsonified_dict() for location in self.locations]
@@ -63,6 +65,7 @@ class Guide(GuidePreview):
 
     def from_jsonified_dict(self, g: GuideJsonified):
         super().from_jsonified_dict(g)
+        self.info = g.info
         self.default_zoom = g.defaultZoom
         self.default_center = g.defaultCenter.get_jsonified_dict()
         return self

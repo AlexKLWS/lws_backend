@@ -41,6 +41,7 @@ class GuidePreview(Material):
 
 
 class Guide(GuidePreview):
+    info: str
     defaultZoom: int
     defaultCenter: LocationCoords
     locations: List[GuideLocationInfo]
