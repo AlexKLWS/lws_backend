@@ -43,7 +43,6 @@ def upsert_guide(db: Session, guide_jsonified: GuideJsonified):
             guide.icon = Icon().from_jsonified_dict(guide_jsonified.icon)
             guide.locations = [GuideLocationInfo().from_jsonified_dict(location)
                                for location in guide_jsonified.locations]
-            print(guide)
             db.add(guide)
         db.commit()
     except:
