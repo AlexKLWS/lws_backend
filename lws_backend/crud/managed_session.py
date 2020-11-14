@@ -13,4 +13,4 @@ def managed_session(db: Session, autocommit=True):
         db.rollback()
         raise
     finally:
-        db.remove()
+        db.close()
