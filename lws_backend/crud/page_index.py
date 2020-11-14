@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy import and_
 
-from lws_backend.pydantic_models.category import Category
-from lws_backend.database_models.categories import Category as DBCategory
+from lws_backend.database_models.categories import Category
+from lws_backend.pydantic_models.category import Category as CategoryENUM
 from lws_backend.database_models.page_index import PageIndex
 from lws_backend.database_models.articles import Article
 from lws_backend.database_models.guides import Guide
@@ -12,8 +12,8 @@ from lws_backend.core.config import PAGE_SIZE
 from lws_backend.database import Session
 
 
-def get_page_index(db: Session, pageNumber: int, category: Category) -> PageIndex:
-    category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+def get_page_index(db: Session, pageNumber: int, category: CategoryENUM) -> PageIndex:
+    category_record = db.query(Category).filter_by(enum_value=category.value).first()
     return (
         db.query(PageIndex)
         .filter(
@@ -23,28 +23,24 @@ def get_page_index(db: Session, pageNumber: int, category: Category) -> PageInde
     )
 
 
-def get_pages_count(db: Session, category: Category) -> int:
-    category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+def get_pages_count(db: Session, category: CategoryENUM) -> int:
+    category_record = db.query(Category).filter_by(enum_value=category.value).first()
     return db.query(PageIndex).filter(PageIndex.category_id == category_record.id).count()
 
 
-def update_index(db: Session, categories: List[Category]):
+def update_index(db: Session, categories: List[CategoryENUM]):
     for category in categories:
         all_materials = []
-        category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
-        articles = category_record.articles.filter(
-            and_(Article.categories.any(DBCategory.enum_value == category.value), Article.hidden.isnot(True)))
+        category_record = db.query(Category).filter_by(enum_value=category.value).first()
+        articles = category_record.articles.filter(Article.hidden.isnot(True))
         for a in articles:
             all_materials.append(a)
 
-        ext_materials = category_record.ext_materials.filter(
-            and_(ExtMaterial.categories.any(DBCategory.enum_value == category.value),
-                 ExtMaterial.hidden.isnot(True)))
+        ext_materials = category_record.ext_materials.filter(ExtMaterial.hidden.isnot(True))
         for e in ext_materials:
             all_materials.append(e)
 
-        guides = category_record.guides.filter(
-            and_(Guide.categories.any(DBCategory.enum_value == category.value), Guide.hidden.isnot(True)))
+        guides = category_record.guides.filter(Guide.hidden.isnot(True))
         for g in guides:
             all_materials.append(g)
 
