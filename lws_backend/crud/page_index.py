@@ -13,35 +13,37 @@ from lws_backend.database import Session
 
 
 def get_page_index(db: Session, pageNumber: int, category: Category) -> PageIndex:
+    category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
     return (
         db.query(PageIndex)
         .filter(
-            and_(PageIndex.page == pageNumber, PageIndex.category.enum_value == category.value)
+            and_(PageIndex.page == pageNumber, PageIndex.category_id == category_record.id)
         )
         .first()
     )
 
 
 def get_pages_count(db: Session, category: Category) -> int:
-    return db.query(PageIndex).filter(PageIndex.category.enum_value == category.value).count()
+    category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+    return db.query(PageIndex).filter(PageIndex.category_id == category_record.id).count()
 
 
 def update_index(db: Session, categories: List[Category]):
     for category in categories:
         all_materials = []
-        articles = db.query(Article.id, Article.created_at).filter(
+        category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+        articles = category_record.articles.filter(
             and_(Article.categories.any(DBCategory.enum_value == category.value), Article.hidden.isnot(True)))
         for a in articles:
             all_materials.append(a)
 
-        ext_materials = db.query(
-            ExtMaterial.id, ExtMaterial.created_at).filter(
-                and_(ExtMaterial.categories.any(DBCategory.enum_value == category.value),
-                     ExtMaterial.hidden.isnot(True)))
+        ext_materials = category_record.ext_materials.filter(
+            and_(ExtMaterial.categories.any(DBCategory.enum_value == category.value),
+                 ExtMaterial.hidden.isnot(True)))
         for e in ext_materials:
             all_materials.append(e)
 
-        guides = db.query(Guide.id, Guide.created_at).filter(
+        guides = category_record.guides.filter(
             and_(Guide.categories.any(DBCategory.enum_value == category.value), Guide.hidden.isnot(True)))
         for g in guides:
             all_materials.append(g)
@@ -55,13 +57,12 @@ def update_index(db: Session, categories: List[Category]):
             start_date = all_materials[-1].created_at
             end_date = all_materials[0].created_at
             existing_record = db.query(PageIndex).filter(
-                and_(PageIndex.page == page, PageIndex.category.enum_value == category.value)).first()
+                and_(PageIndex.page == page, PageIndex.category_id == category_record.id)).first()
             if existing_record is not None:
                 existing_record.start_date = start_date
                 existing_record.end_date = end_date
             else:
-                storedCategory = db.query(DBCategory).filter(DBCategory.enum_value == category.value)
-                index = PageIndex(start_date=start_date, end_date=end_date, page=page, category=storedCategory)
+                index = PageIndex(start_date=start_date, end_date=end_date, page=page, category=category_record)
                 db.add(index)
         else:
             while len(all_materials) > 0:
@@ -71,15 +72,12 @@ def update_index(db: Session, categories: List[Category]):
                 start_date = page_materials[-1].created_at
                 end_date = page_materials[0].created_at
                 existing_record = db.query(PageIndex).filter(
-                    and_(PageIndex.page == page, PageIndex.category.enum_value == category.value)).first()
+                    and_(PageIndex.page == page, PageIndex.category_id == category_record.id)).first()
                 if existing_record is not None:
                     existing_record.start_date = start_date
                     existing_record.end_date = end_date
                 else:
-                    storedCategory = db.query(DBCategory).filter(DBCategory.enum_value == category.value)
-                    index = PageIndex(start_date=start_date, end_date=end_date, page=page, category=storedCategory)
+                    index = PageIndex(start_date=start_date, end_date=end_date, page=page, category=category_record)
                     db.add(index)
 
                 page += 1
-
-    db.commit()
