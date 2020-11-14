@@ -17,22 +17,21 @@ def get_ext_material_by_id(db: Session, id: str) -> ExtMaterial:
 def get_ext_material_previews(
     db: Session, page_index: PageIndex, category: Category
 ) -> List[ExtMaterial]:
+    category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+    if category_record is None:
+        return []
     if page_index.page == 1:
-        ext_material_previews = (
-            db.query(ExtMaterial).filter(and_(
-                ExtMaterial.created_at >= page_index.start_date,
-                ExtMaterial.hidden.isnot(True),
-            )).all()
-        )
+        ext_material_previews = category_record.ext_materials.filter(and_(
+            ExtMaterial.created_at >= page_index.start_date,
+            ExtMaterial.hidden.isnot(True),
+        )).all()
         return ext_material_previews
     else:
-        ext_material_previews = (
-            db.query(ExtMaterial).filter(and_(
-                ExtMaterial.created_at >= page_index.start_date,
-                ExtMaterial.created_at <= page_index.end_date,
-                ExtMaterial.hidden.isnot(True),
-            )).all()
-        )
+        ext_material_previews = category_record.ext_materials.filter(and_(
+            ExtMaterial.created_at >= page_index.start_date,
+            ExtMaterial.created_at <= page_index.end_date,
+            ExtMaterial.hidden.isnot(True),
+        )).all()
         return ext_material_previews
 
 
@@ -43,7 +42,7 @@ def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonifie
     for category in consolidated_categories:
         category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
         if category_record is None:
-            category_record = Category(enum_value=category.value)
+            category_record = DBCategory(enum_value=category.value)
             db.add(category_record)
         categories.append(category_record)
 

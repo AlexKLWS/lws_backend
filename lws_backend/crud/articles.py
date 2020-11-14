@@ -18,6 +18,8 @@ def get_article_previews(
     db: Session, page_index: PageIndex, category: Category
 ) -> List[ArticlePreview]:
     category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+    if category_record is None:
+        return []
     if page_index.page == 1:
         article_previews = category_record.articles.filter(
             and_(ArticlePreview.created_at >= page_index.start_date, ArticlePreview.hidden.isnot(True))).all()
@@ -36,7 +38,7 @@ def upsert_article(db: Session, article_jsonified: ArticleJsonified):
     for category in consolidated_categories:
         category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
         if category_record is None:
-            category_record = Category(enum_value=category.value)
+            category_record = DBCategory(enum_value=category.value)
             db.add(category_record)
         categories.append(category_record)
 
