@@ -8,6 +8,16 @@ from lws_backend.database_models.icons import Icon
 from lws_backend.database_models.locations import GuideLocationInfo
 from lws_backend.pydantic_models.guide import Guide as GuideJsonified
 
+"""
+My first idea was to create another abstract superclass, that would have categories
+as a prop, and then employ a so-called "generic foreign key" approach
+to connect this table to categories.
+However, this approach is not in line with SQLAlchemy's usual style, as foregoing
+foreign key integrity means that the tables can easily contain invalid
+references and also have no ability to use in-database cascade functionality.
+So I had decided to go with "table_per_association" approach.
+"""
+
 guides_category_association = Table('guides_category_association', Base.metadata,
                                     Column('guides_id', Integer, ForeignKey('guides.id')),
                                     Column('category_id', Integer, ForeignKey('categories.id'))
