@@ -1,9 +1,17 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
 
+from lws_backend.database import Base
 from lws_backend.database_models.base import DatabaseBaseModel
+from lws_backend.database_models.category import Category
 from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.ext_material import ExtMaterial as ExtMaterialJsonified
+
+
+ext_materials_category_association = Table('ext_materials_category_association', Base.metadata,
+                                           Column('ext_materials_id', Integer, ForeignKey('ext_materials.id')),
+                                           Column('category_id', Integer, ForeignKey('categories.id'))
+                                           )
 
 
 class ExtMaterial(DatabaseBaseModel):
@@ -16,6 +24,10 @@ class ExtMaterial(DatabaseBaseModel):
     url = Column(String)
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
+    categories = relationship(
+        Category,
+        secondary=ext_materials_category_association,
+        back_populates="ext_materials")
     icon = relationship(Icon, lazy="joined")
 
     def get_jsonified_dict(self):

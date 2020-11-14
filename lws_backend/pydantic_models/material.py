@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -10,4 +10,4 @@ class Material(BaseModel):
     referenceId: Optional[str] = None
     name: str
     subtitle: str
-    category: Category
+    categories: List[Category]

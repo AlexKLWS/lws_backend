@@ -1,9 +1,16 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, Table
 from sqlalchemy.orm import relationship
 
+from lws_backend.database import Base
 from lws_backend.database_models.base import DatabaseBaseModel
+from lws_backend.database_models.category import Category
 from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.article import Article as ArticleJsonified
+
+articles_category_association = Table('articles_category_association', Base.metadata,
+                                      Column('articles_id', Integer, ForeignKey('articles.id')),
+                                      Column('category_id', Integer, ForeignKey('categories.id'))
+                                      )
 
 
 class ArticleBase(DatabaseBaseModel):
@@ -13,6 +20,11 @@ class ArticleBase(DatabaseBaseModel):
     name = Column(String)
     subtitle = Column(String)
     category = Column(Integer, default=0)
+
+    categories = relationship(
+        Category,
+        secondary=articles_category_association,
+        back_populates="articles")
 
     def get_jsonified_dict(self):
         return {
