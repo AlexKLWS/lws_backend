@@ -40,13 +40,12 @@ def upsert_article(db: Session, article_jsonified: ArticleJsonified):
             db.add(category_record)
         categories.append(category_record)
 
-    existing_record = db.query(Article).filter(Article.reference_id == article_jsonified.referenceId).first()
+    existing_record = db.query(Article).filter_by(reference_id=article_jsonified.referenceId).first()
     if existing_record is not None:
         existing_record.from_jsonified_dict(article_jsonified)
         existing_record.categories.clear()
         existing_record.categories.extend(categories)
-        existing_icon_record = db.query(Icon).filter(Icon.id ==
-                                                     existing_record.icon_id).first()
+        existing_icon_record = db.query(Icon).filter_by(id=existing_record.icon_id).first()
         existing_icon_record.from_jsonified_dict(article_jsonified.icon)
     else:
         article = Article().from_jsonified_dict(article_jsonified)

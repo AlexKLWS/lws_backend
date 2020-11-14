@@ -2,22 +2,22 @@ from typing import List
 from sqlalchemy import and_
 
 from lws_backend.database import Session
-from lws_backend.database_models.categories import Category as DBCategory
+from lws_backend.database_models.categories import Category
+from lws_backend.pydantic_models.category import Category as CategoryENUM
 from lws_backend.database_models.guides import Guide, GuidePreview, GuideLocationInfo
 from lws_backend.database_models.icons import Icon
 from lws_backend.database_models.page_index import PageIndex
-from lws_backend.pydantic_models.category import Category
 from lws_backend.pydantic_models.guide import Guide as GuideJsonified
 
 
 def get_guide_by_id(db: Session, id: str) -> Guide:
-    return db.query(Guide).filter(Guide.reference_id == id).first()
+    return db.query(Guide).filter_by(reference_id=id).first()
 
 
 def get_guide_previews(
-    db: Session, page_index: PageIndex, category: Category
+    db: Session, page_index: PageIndex, category: CategoryENUM
 ) -> List[GuidePreview]:
-    category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+    category_record = db.query(Category).filter_by(enum_value=category.value).first()
     if category_record is None:
         return []
     if page_index.page == 1:
@@ -34,19 +34,18 @@ def get_guide_previews(
 def upsert_guide(db: Session, guide_jsonified: GuideJsonified):
     categories = []
     for category in guide_jsonified.categories:
-        category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+        category_record = db.query(Category).filter_by(enum_value=category.value).first()
         if category_record is None:
-            category_record = DBCategory(enum_value=category.value)
+            category_record = Category(enum_value=category.value)
             db.add(category_record)
         categories.append(category_record)
 
-    existing_record = db.query(Guide).filter(Guide.reference_id == guide_jsonified.referenceId).first()
+    existing_record = db.query(Guide).filter_by(reference_id=guide_jsonified.referenceId).first()
     if existing_record is not None:
         existing_record.from_jsonified_dict(guide_jsonified)
         existing_record.categories.clear()
         existing_record.categories.extend(categories)
-        existing_icon_record = db.query(Icon).filter(Icon.id ==
-                                                     existing_record.icon_id).first()
+        existing_icon_record = db.query(Icon).filter_by(id=existing_record.icon_id).first()
         existing_icon_record.from_jsonified_dict(guide_jsonified.icon)
     else:
         guide = Guide().from_jsonified_dict(guide_jsonified)
