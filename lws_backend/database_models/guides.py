@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, JSON
+from sqlalchemy import Column, ForeignKey, Integer, Boolean, String, Table, JSON
 from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
@@ -20,7 +20,7 @@ class GuideBase(DatabaseBaseModel):
     reference_id = Column(String, nullable=False)
     name = Column(String)
     subtitle = Column(String)
-    category = Column(Integer, default=0)
+    hidden = Column(Boolean)
 
     categories = relationship(
         Category,
@@ -33,14 +33,13 @@ class GuideBase(DatabaseBaseModel):
             "referenceId": self.reference_id,
             "name": self.name,
             "subtitle": self.subtitle,
-            "category": self.category,
+            "hidden": self.hidden
         }
 
     def from_jsonified_dict(self, g: GuideJsonified):
         self.reference_id = g.referenceId
         self.name = g.name
         self.subtitle = g.subtitle
-        self.category = g.category
         if g.createdAt is not None:
             self.created_at = g.createdAt
         return self

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Table, Boolean
 from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
@@ -20,7 +20,7 @@ class ExtMaterial(DatabaseBaseModel):
     reference_id = Column(String, nullable=False)
     name = Column(String)
     subtitle = Column(String)
-    category = Column(Integer, default=0)
+    hidden = Column(Boolean)
     url = Column(String)
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
@@ -36,7 +36,7 @@ class ExtMaterial(DatabaseBaseModel):
             "referenceId": self.reference_id,
             "name": self.name,
             "subtitle": self.subtitle,
-            "category": self.category,
+            "hidden": self.hidden,
             "url": self.url,
             "icon": self.icon.get_jsonified_dict()
         }

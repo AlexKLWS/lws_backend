@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, Table
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, Table, Boolean
 from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
@@ -20,6 +20,7 @@ class ArticleBase(DatabaseBaseModel):
     name = Column(String)
     subtitle = Column(String)
     category = Column(Integer, default=0)
+    hidden = Column(Boolean)
 
     categories = relationship(
         Category,
@@ -32,7 +33,7 @@ class ArticleBase(DatabaseBaseModel):
             "referenceId": self.reference_id,
             "name": self.name,
             "subtitle": self.subtitle,
-            "category": self.category,
+            "hidden": self.hidden,
         }
 
     def from_jsonified_dict(self, a: ArticleJsonified):
