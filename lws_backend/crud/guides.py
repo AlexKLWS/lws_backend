@@ -21,11 +21,11 @@ def get_guide_previews(
     if category_record is None:
         return []
     if page_index.page == 1:
-        guide_previews = category_record.filter(
+        guide_previews = category_record.guides.filter(
             and_(GuidePreview.created_at >= page_index.start_date, GuidePreview.hidden.isnot(True))).all()
         return guide_previews
     else:
-        guide_previews = category_record.filter(
+        guide_previews = category_record.guides.filter(
             and_(GuidePreview.created_at >= page_index.start_date,
                  GuidePreview.created_at <= page_index.end_date, GuidePreview.hidden.isnot(True))).all()
         return guide_previews
