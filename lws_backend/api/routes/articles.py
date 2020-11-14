@@ -19,10 +19,12 @@ async def get_article(id: str, db: Session = Depends(get_db)):
     with managed_session(db) as session:
         article = get_article_by_id(session, id)
 
-    if article is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Article not found")
+        if article is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Article not found")
 
-    return article.get_jsonified_dict()
+        article_response = article.get_jsonified_dict()
+
+    return article_response
 
 
 @router.post("", response_model=Article)
@@ -34,6 +36,8 @@ async def add_or_update_article(article: Article, db: Session = Depends(get_db),
     if article.referenceId is None:
         article.referenceId = str(uuid.uuid4())
     article.categories.append(Category.MISC)
+    # Removing duplicates
+    article.categories = list(dict.fromkeys(article.categories))
 
     with managed_session(db) as session:
         upsert_article(session, article)

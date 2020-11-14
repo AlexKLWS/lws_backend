@@ -18,10 +18,12 @@ async def get_ext_material(id: str, db: Session = Depends(get_db)):
     with managed_session(db) as session:
         ext_material = get_ext_material_by_id(session, id)
 
-    if ext_material is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="External material not found")
+        if ext_material is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="External material not found")
 
-    return ext_material.get_jsonified_dict()
+        ext_material_response = ext_material.get_jsonified_dict()
+
+    return ext_material_response
 
 
 @router.post("", response_model=ExtMaterial)
@@ -32,6 +34,8 @@ async def add_or_update_ext_material(ext_material: ExtMaterial, db: Session = De
     if ext_material.referenceId is None:
         ext_material.referenceId = str(uuid.uuid4())
     ext_material.categories.append(Category.MISC)
+    # Removing duplicates
+    ext_material.categories = list(dict.fromkeys(ext_material.categories))
 
     with managed_session(db) as session:
         upsert_ext_material(session, ext_material)

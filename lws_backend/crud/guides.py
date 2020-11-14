@@ -33,9 +33,7 @@ def get_guide_previews(
 
 def upsert_guide(db: Session, guide_jsonified: GuideJsonified):
     categories = []
-    # Removing duplicates
-    consolidated_categories = list(dict.fromkeys(guide_jsonified.categories))
-    for category in consolidated_categories:
+    for category in guide_jsonified.categories:
         category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
         if category_record is None:
             category_record = DBCategory(enum_value=category.value)

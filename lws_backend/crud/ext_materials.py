@@ -37,9 +37,7 @@ def get_ext_material_previews(
 
 def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonified):
     categories = []
-    # Removing duplicates
-    consolidated_categories = list(dict.fromkeys(ext_material_jsonified.categories))
-    for category in consolidated_categories:
+    for category in ext_material_jsonified.categories:
         category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
         if category_record is None:
             category_record = DBCategory(enum_value=category.value)

@@ -18,10 +18,12 @@ async def get_guide(id: str, db: Session = Depends(get_db)):
     with managed_session(db) as session:
         guide = get_guide_by_id(session, id)
 
-    if guide is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Guide not found")
+        if guide is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Guide not found")
 
-    return guide.get_jsonified_dict()
+        guide_response = guide.get_jsonified_dict()
+
+    return guide_response
 
 
 @router.post("", response_model=Guide)
@@ -33,6 +35,8 @@ async def add_or_update_guide(guide: Guide, db: Session = Depends(get_db),
     if not guide.referenceId:
         guide.referenceId = str(uuid.uuid4())
     guide.categories.append(Category.MISC)
+    # Removing duplicates
+    guide.categories = list(dict.fromkeys(guide.categories))
 
     for location in guide.locations:
         if not location.referenceId:

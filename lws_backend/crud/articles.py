@@ -33,9 +33,7 @@ def get_article_previews(
 
 def upsert_article(db: Session, article_jsonified: ArticleJsonified):
     categories = []
-    # Removing duplicates
-    consolidated_categories = list(dict.fromkeys(article_jsonified.categories))
-    for category in consolidated_categories:
+    for category in article_jsonified.categories:
         category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
         if category_record is None:
             category_record = DBCategory(enum_value=category.value)
