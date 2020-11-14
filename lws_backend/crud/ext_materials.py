@@ -2,6 +2,7 @@ from typing import List
 from sqlalchemy import and_
 
 from lws_backend.database import Session
+from lws_backend.database_models.categories import Category as DBCategory
 from lws_backend.pydantic_models.category import Category
 from lws_backend.database_models.page_index import PageIndex
 from lws_backend.database_models.ext_materials import ExtMaterial
@@ -16,54 +17,48 @@ def get_ext_material_by_id(db: Session, id: str) -> ExtMaterial:
 def get_ext_material_previews(
     db: Session, page_index: PageIndex, category: Category
 ) -> List[ExtMaterial]:
-    ext_material_preview_filter = None
     if page_index.page == 1:
-        ext_material_preview_filter = (
-            and_(
-                ExtMaterial.created_at >= page_index.start_date,
-                ExtMaterial.category == category.value,
-            )
-            if category != Category.MISC
-            else and_(ExtMaterial.created_at >= page_index.start_date)
-        )
-    else:
-        ext_material_preview_filter = (
-            and_(
-                ExtMaterial.created_at >= page_index.start_date,
-                ExtMaterial.created_at <= page_index.end_date,
-                ExtMaterial.category == category.value,
-            )
-            if category != Category.MISC
-            else and_(
-                ExtMaterial.created_at >= page_index.start_date,
-                ExtMaterial.created_at <= page_index.end_date,
-            )
-        )
-
-    if ext_material_preview_filter is not None:
         ext_material_previews = (
-            db.query(ExtMaterial).filter(ext_material_preview_filter).all()
+            db.query(ExtMaterial).filter(and_(
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.hidden.isnot(True),
+            )).all()
         )
         return ext_material_previews
-    return []
+    else:
+        ext_material_previews = (
+            db.query(ExtMaterial).filter(and_(
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.created_at <= page_index.end_date,
+                ExtMaterial.hidden.isnot(True),
+            )).all()
+        )
+        return ext_material_previews
 
 
 def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonified):
-    try:
-        existing_record = db.query(ExtMaterial).filter(ExtMaterial.reference_id ==
-                                                       ext_material_jsonified.referenceId).first()
-        if existing_record is not None:
-            existing_record.from_jsonified_dict(ext_material_jsonified)
-            existing_icon_record = db.query(Icon).filter(Icon.id ==
-                                                         existing_record.icon_id).first()
-            existing_icon_record.from_jsonified_dict(ext_material_jsonified.icon)
-        else:
-            ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
-            ext_material.icon = Icon().from_jsonified_dict(ext_material_jsonified.icon)
-            db.add(ext_material)
-        db.commit()
-    except:
-        db.rollback()
-        raise
-    finally:
-        db.close()
+    categories = []
+    # Removing duplicates
+    consolidated_categories = list(dict.fromkeys(ext_material_jsonified.categories))
+    for category in consolidated_categories:
+        category_record = db.query(DBCategory).filter(DBCategory.enum_value == category.value).first()
+        if category_record is None:
+            category_record = Category(enum_value=category.value)
+            db.add(category_record)
+        categories.append(category_record)
+
+    existing_record = db.query(ExtMaterial).filter(ExtMaterial.reference_id ==
+                                                   ext_material_jsonified.referenceId).first()
+    if existing_record is not None:
+        existing_record.from_jsonified_dict(ext_material_jsonified)
+        existing_record.categories.clear()
+        existing_record.categories.extend(categories)
+        existing_icon_record = db.query(Icon).filter(Icon.id ==
+                                                     existing_record.icon_id).first()
+        existing_icon_record.from_jsonified_dict(ext_material_jsonified.icon)
+
+    else:
+        ext_material = ExtMaterial().from_jsonified_dict(ext_material_jsonified)
+        ext_material.icon = Icon().from_jsonified_dict(ext_material_jsonified.icon)
+        ext_material.categories.extend(categories)
+        db.add(ext_material)
