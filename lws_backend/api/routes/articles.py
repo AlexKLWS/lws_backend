@@ -16,7 +16,7 @@ router = APIRouter()
 
 @router.get("", response_model=Article)
 async def get_article(id: str, db: Session = Depends(get_db)):
-    with managed_session(db, True) as session:
+    with managed_session(db) as session:
         article = get_article_by_id(session, id)
 
     if article is None:
@@ -35,7 +35,7 @@ async def add_or_update_article(article: Article, db: Session = Depends(get_db),
         article.referenceId = str(uuid.uuid4())
     article.categories.append(Category.MISC)
 
-    with managed_session(db, True) as session:
+    with managed_session(db) as session:
         upsert_article(session, article)
         update_index(session, article.categories)
 

@@ -4,7 +4,7 @@ from lws_backend.database import Session
 
 
 @contextmanager
-def managed_session(db: Session, autocommit=False):
+def managed_session(db: Session, autocommit=True):
     try:
         yield db
         if autocommit:
