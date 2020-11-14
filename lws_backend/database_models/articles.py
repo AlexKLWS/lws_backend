@@ -50,6 +50,7 @@ class ArticleBase(DatabaseBaseModel):
         self.reference_id = a.referenceId
         self.name = a.name
         self.subtitle = a.subtitle
+        self.hidden = a.hidden
         if a.createdAt is not None:
             self.created_at = a.createdAt
         return self

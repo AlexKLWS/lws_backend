@@ -56,6 +56,7 @@ class ExtMaterial(DatabaseBaseModel):
         self.subtitle = e.subtitle
         self.category = e.category
         self.url = e.url
+        self.hidden = e.hidden
         if e.createdAt is not None:
             self.created_at = e.createdAt
         return self

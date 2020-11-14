@@ -50,6 +50,7 @@ class GuideBase(DatabaseBaseModel):
         self.reference_id = g.referenceId
         self.name = g.name
         self.subtitle = g.subtitle
+        self.hidden = g.hidden
         if g.createdAt is not None:
             self.created_at = g.createdAt
         return self
