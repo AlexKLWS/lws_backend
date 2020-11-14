@@ -30,10 +30,9 @@ async def get_previews(
     for p in ext_materials_previews:
         previews.append(p.get_jsonified_dict())
 
-    if category == Category.GUIDES or category == Category.MISC:
-        guide_previews = get_guide_previews(db, page_index)
-        for g in guide_previews:
-            previews.append(g.get_jsonified_dict())
+    guide_previews = get_guide_previews(db, page_index, category)
+    for g in guide_previews:
+        previews.append(g.get_jsonified_dict())
 
     previews.sort(key=lambda p: p["createdAt"], reverse=True)
 
