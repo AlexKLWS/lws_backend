@@ -27,7 +27,6 @@ def get_article_previews(
                                                                 ArticlePreview.created_at <= page_index.end_date,
                                                                 ArticlePreview.hidden.isnot(True))).all()
         return article_previews
-    return []
 
 
 def upsert_article(db: Session, article_jsonified: ArticleJsonified):
