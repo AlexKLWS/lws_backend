@@ -18,14 +18,17 @@ class Category(DatabaseBaseModel):
     ext_materials = relationship(
         ExtMaterial,
         secondary=ext_materials_category_association,
-        back_populates="categories")
+        back_populates="categories",
+        lazy="dynamic")
 
     articles = relationship(
         Article,
         secondary=articles_category_association,
-        back_populates="categories")
+        back_populates="categories",
+        lazy="dynamic")
 
     guides = relationship(
         Guide,
         secondary=guides_category_association,
-        back_populates="categories")
+        back_populates="categories",
+        lazy="dynamic")
