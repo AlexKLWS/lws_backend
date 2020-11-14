@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
 from lws_backend.database_models.base import DatabaseBaseModel
-from lws_backend.database_models.categories import Category
 from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.article import Article as ArticleJsonified
 
@@ -33,7 +32,7 @@ class ArticleBase(DatabaseBaseModel):
     hidden = Column(Boolean)
 
     categories = relationship(
-        Category,
+        "Category",
         secondary=articles_category_association,
         back_populates="articles")
 

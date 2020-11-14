@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
 from lws_backend.database_models.base import DatabaseBaseModel
-from lws_backend.database_models.categories import Category
 from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.ext_material import ExtMaterial as ExtMaterialJsonified
 
@@ -34,7 +33,7 @@ class ExtMaterial(DatabaseBaseModel):
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
     categories = relationship(
-        Category,
+        "Category",
         secondary=ext_materials_category_association,
         back_populates="ext_materials")
     icon = relationship(Icon, lazy="joined")

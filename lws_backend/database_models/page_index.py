@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from lws_backend.pydantic_models.page_index import PageIndex as PageIndexJsonified
 from lws_backend.database_models.base import DatabaseBaseModel
-from lws_backend.database_models.categories import Category
 
 
 class PageIndex(DatabaseBaseModel):
@@ -13,7 +12,7 @@ class PageIndex(DatabaseBaseModel):
     end_date = Column(DateTime(timezone=True), nullable=False)
     page = Column(Integer)
     category_id = Column(Integer, ForeignKey('categories.id'))
-    category = relationship(Category, back_populates="page_index")
+    category = relationship("Category", back_populates="page_index")
 
     def get_jsonified_dict(self):
         return {
