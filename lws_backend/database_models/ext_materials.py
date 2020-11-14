@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
 from lws_backend.database_models.base import DatabaseBaseModel
-from lws_backend.database_models.category import Category
+from lws_backend.database_models.categories import Category
 from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.ext_material import ExtMaterial as ExtMaterialJsonified
 
@@ -38,6 +38,7 @@ class ExtMaterial(DatabaseBaseModel):
             "subtitle": self.subtitle,
             "hidden": self.hidden,
             "url": self.url,
+            "categories": [category.enum_value for category in self.categories],
             "icon": self.icon.get_jsonified_dict()
         }
 

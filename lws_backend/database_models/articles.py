@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
 from lws_backend.database_models.base import DatabaseBaseModel
-from lws_backend.database_models.category import Category
+from lws_backend.database_models.categories import Category
 from lws_backend.database_models.icons import Icon
 from lws_backend.pydantic_models.article import Article as ArticleJsonified
 
@@ -33,6 +33,7 @@ class ArticleBase(DatabaseBaseModel):
             "referenceId": self.reference_id,
             "name": self.name,
             "subtitle": self.subtitle,
+            "categories": [category.enum_value for category in self.categories],
             "hidden": self.hidden,
         }
 
@@ -40,7 +41,6 @@ class ArticleBase(DatabaseBaseModel):
         self.reference_id = a.referenceId
         self.name = a.name
         self.subtitle = a.subtitle
-        self.category = a.category
         if a.createdAt is not None:
             self.created_at = a.createdAt
         return self
