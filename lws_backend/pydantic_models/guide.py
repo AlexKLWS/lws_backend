@@ -45,3 +45,4 @@ class Guide(GuidePreview):
     defaultZoom: int
     defaultCenter: LocationCoords
     locations: List[GuideLocationInfo]
+    isGuideMaterial: bool

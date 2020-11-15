@@ -30,6 +30,7 @@ class GuideBase(DatabaseBaseModel):
     name = Column(String)
     subtitle = Column(String)
     hidden = Column(Boolean)
+    is_guide_material = Column(Boolean)
 
     categories = relationship(
         "Category",
@@ -43,7 +44,8 @@ class GuideBase(DatabaseBaseModel):
             "name": self.name,
             "subtitle": self.subtitle,
             "categories": [category.enum_value for category in self.categories],
-            "hidden": self.hidden
+            "hidden": self.hidden,
+            "isGuideMaterial": self.is_guide_material
         }
 
     def from_jsonified_dict(self, g: GuideJsonified):
@@ -51,6 +53,7 @@ class GuideBase(DatabaseBaseModel):
         self.name = g.name
         self.subtitle = g.subtitle
         self.hidden = g.hidden
+        self.is_guide_material = g.isGuideMaterial
         if g.createdAt is not None:
             self.created_at = g.createdAt
         return self
