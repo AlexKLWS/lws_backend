@@ -13,7 +13,7 @@ class Category(DatabaseBaseModel):
 
     enum_value = Column(Integer, default=0)
 
-    page_index = relationship(PageIndex, uselist=False, back_populates="category")
+    page_index = relationship(PageIndex, back_populates="category")
 
     ext_materials = relationship(
         ExtMaterial,
