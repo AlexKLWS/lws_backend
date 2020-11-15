@@ -45,6 +45,9 @@ def upsert_guide(db: Session, guide_jsonified: GuideJsonified):
         existing_record.from_jsonified_dict(guide_jsonified)
         existing_record.categories.clear()
         existing_record.categories.extend(categories)
+        existing_record.locations.clear()
+        existing_record.locations = [GuideLocationInfo().from_jsonified_dict(location)
+                                     for location in guide_jsonified.locations]
         existing_icon_record = db.query(Icon).filter_by(id=existing_record.icon_id).first()
         existing_icon_record.from_jsonified_dict(guide_jsonified.icon)
     else:

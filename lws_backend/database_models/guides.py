@@ -75,7 +75,7 @@ class GuidePreview(GuideBase):
 
 
 class Guide(GuidePreview):
-    locations = relationship(GuideLocationInfo, lazy="joined")
+    locations = relationship(GuideLocationInfo, lazy="joined", cascade="all, delete-orphan")
     default_zoom = Column(Integer)
     default_center = Column(JSON)
     info = Column(String)
