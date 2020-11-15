@@ -8,6 +8,7 @@ from lws_backend.pydantic_models.icon import Icon
 class Preview(Material):
     icon: Icon
     url: Optional[str] = None
+    isGuideMaterial: Optional[bool] = None
 
 
 class PreviewResponse(BaseModel):
