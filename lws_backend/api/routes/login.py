@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 
 from lws_backend.pydantic_models.token import Token
-from lws_backend.database import Session, get_db
+from lws_backend.database import Session, get_managed_session
 from lws_backend.config import config
 from lws_backend.core.config import JWT_ENCODE_SECRET_KEY, ALGORITHM, TOKEN_LIFETIME
 from lws_backend.core.verify_password import verify_password
@@ -35,7 +35,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 
 @router.post("", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_managed_session)):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(

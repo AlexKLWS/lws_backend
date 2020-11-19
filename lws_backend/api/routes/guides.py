@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 import uuid
 
-from lws_backend.database import Session, get_db
+from lws_backend.database import Session, get_managed_session
 from lws_backend.pydantic_models.guide import Guide
 from lws_backend.crud.guides import get_guide_by_id, upsert_guide
 from lws_backend.pydantic_models.category import Category
@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("", response_model=Guide)
-async def get_guide(id: str, db: Session = Depends(get_db),
+async def get_guide(id: str, db: Session = Depends(get_managed_session),
                     user_auth=Depends(check_user_auth)):
     guide = get_guide_by_id(db, id)
 
@@ -35,7 +35,7 @@ async def get_guide(id: str, db: Session = Depends(get_db),
 
 
 @router.post("", response_model=Guide)
-async def add_or_update_guide(guide: Guide, db: Session = Depends(get_db),
+async def add_or_update_guide(guide: Guide, db: Session = Depends(get_managed_session),
                               user_auth=Depends(check_user_auth)):
     exception = user_auth[1]
     if exception:

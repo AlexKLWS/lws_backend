@@ -14,7 +14,7 @@ def prepare_database(database_url: str):
 
 
 # Dependency
-def get_db(autocommit=True):
+def get_managed_session(autocommit=True):
     db = Session()
     try:
         yield db

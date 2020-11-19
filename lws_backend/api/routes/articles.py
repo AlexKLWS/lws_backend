@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 import uuid
 
-from lws_backend.database import Session, get_db
+from lws_backend.database import Session, get_managed_session
 from lws_backend.crud.articles import get_article_by_id
 from lws_backend.pydantic_models.article import Article
 from lws_backend.pydantic_models.category import Category
@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get("", response_model=Article)
-async def get_article(id: str, db: Session = Depends(get_db),
+async def get_article(id: str, db: Session = Depends(get_managed_session),
                       user_auth=Depends(check_user_auth)):
     article = get_article_by_id(db, id)
 
@@ -36,7 +36,7 @@ async def get_article(id: str, db: Session = Depends(get_db),
 
 
 @router.post("", response_model=Article)
-async def add_or_update_article(article: Article, db: Session = Depends(get_db),
+async def add_or_update_article(article: Article, db: Session = Depends(get_managed_session),
                                 user_auth=Depends(check_user_auth)):
     exception = user_auth[1]
     if exception:

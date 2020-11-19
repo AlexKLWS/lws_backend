@@ -5,14 +5,14 @@ from datetime import datetime
 from jose import JWTError, jwt
 
 from lws_backend.config import config
-from lws_backend.database import Session, get_db
+from lws_backend.database import Session, get_managed_session
 from lws_backend.core.config import JWT_ENCODE_SECRET_KEY, ALGORITHM
 from lws_backend.crud.users import get_user_by_username
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
 
-async def check_user_auth(token: Optional[str] = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def check_user_auth(token: Optional[str] = Depends(oauth2_scheme), db: Session = Depends(get_managed_session)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

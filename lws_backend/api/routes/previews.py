@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from lws_backend.database import Session, get_db
+from lws_backend.database import Session, get_managed_session
 from lws_backend.pydantic_models.category import Category
 from lws_backend.api.dependencies.authorization import check_user_auth
 from lws_backend.crud.page_index import get_page_index, get_pages_count
@@ -16,7 +16,7 @@ router = APIRouter()
 
 @router.get("", response_model=PreviewResponse)
 async def get_previews(
-        category: Category, page: int = 1, include_hidden: Optional[bool] = False, db: Session = Depends(get_db),
+        category: Category, page: int = 1, include_hidden: Optional[bool] = False, db: Session = Depends(get_managed_session),
         user_auth=Depends(check_user_auth)):
 
     if include_hidden:
