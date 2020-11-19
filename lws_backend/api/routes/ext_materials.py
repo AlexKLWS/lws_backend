@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 import uuid
 
 from lws_backend.database import Session, get_db
-from lws_backend.crud.managed_session import managed_session
 from lws_backend.crud.ext_materials import get_ext_material_by_id, upsert_ext_material
 from lws_backend.pydantic_models.ext_material import ExtMaterial
 from lws_backend.pydantic_models.category import Category
@@ -16,22 +15,21 @@ router = APIRouter()
 @router.get("", response_model=ExtMaterial)
 async def get_ext_material(id: str, db: Session = Depends(get_db),
                            user_auth=Depends(check_user_auth)):
-    with managed_session(db) as session:
-        ext_material = get_ext_material_by_id(session, id)
+    ext_material = get_ext_material_by_id(db, id)
 
-        if ext_material is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="External material not found")
+    if ext_material is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="External material not found")
 
-        if ext_material.hidden:
-            exception = user_auth[1]
-            if exception:
-                raise exception
-            access_rights = user_auth[0]
-            if access_rights != UserAccessRights.READ and access_rights != UserAccessRights.WRITE:
-                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                                    detail="User doesn't have required access rights")
+    if ext_material.hidden:
+        exception = user_auth[1]
+        if exception:
+            raise exception
+        access_rights = user_auth[0]
+        if access_rights != UserAccessRights.READ and access_rights != UserAccessRights.WRITE:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                detail="User doesn't have required access rights")
 
-        ext_material_response = ext_material.get_jsonified_dict()
+    ext_material_response = ext_material.get_jsonified_dict()
 
     return ext_material_response
 
@@ -51,8 +49,7 @@ async def add_or_update_ext_material(ext_material: ExtMaterial, db: Session = De
     # Removing duplicates
     ext_material.categories = list(dict.fromkeys(ext_material.categories))
 
-    with managed_session(db) as session:
-        upsert_ext_material(session, ext_material)
-        update_index(session, ext_material.categories)
+    upsert_ext_material(db, ext_material)
+    update_index(db, ext_material.categories)
 
     return ext_material

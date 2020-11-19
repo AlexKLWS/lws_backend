@@ -14,9 +14,14 @@ def prepare_database(database_url: str):
 
 
 # Dependency
-def get_db():
+def get_db(autocommit=True):
     db = Session()
     try:
         yield db
+        if autocommit:
+            db.commit()
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
