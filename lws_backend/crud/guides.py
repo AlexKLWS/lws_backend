@@ -15,20 +15,30 @@ def get_guide_by_id(db: Session, id: str) -> Guide:
 
 
 def get_guide_previews(
-    db: Session, page_index: PageIndex, category: CategoryENUM
+    db: Session, page_index: PageIndex, category: CategoryENUM, include_hidden: bool,
 ) -> List[GuidePreview]:
     category_record = db.query(Category).filter_by(enum_value=category.value).first()
     if category_record is None:
         return []
-    if page_index.page == 1:
-        guide_previews = category_record.guides.filter(
-            and_(GuidePreview.created_at >= page_index.start_date, GuidePreview.hidden.isnot(True))).all()
-        return guide_previews
+    if include_hidden:
+        if page_index.page == 1:
+            guide_previews = category_record.guides.filter(GuidePreview.created_at >= page_index.start_date).all()
+            return guide_previews
+        else:
+            guide_previews = category_record.guides.filter(
+                and_(GuidePreview.created_at >= page_index.start_date,
+                     GuidePreview.created_at <= page_index.end_date)).all()
+            return guide_previews
     else:
-        guide_previews = category_record.guides.filter(
-            and_(GuidePreview.created_at >= page_index.start_date,
-                 GuidePreview.created_at <= page_index.end_date, GuidePreview.hidden.isnot(True))).all()
-        return guide_previews
+        if page_index.page == 1:
+            guide_previews = category_record.guides.filter(
+                and_(GuidePreview.created_at >= page_index.start_date, GuidePreview.hidden.isnot(True))).all()
+            return guide_previews
+        else:
+            guide_previews = category_record.guides.filter(
+                and_(GuidePreview.created_at >= page_index.start_date,
+                     GuidePreview.created_at <= page_index.end_date, GuidePreview.hidden.isnot(True))).all()
+            return guide_previews
 
 
 def upsert_guide(db: Session, guide_jsonified: GuideJsonified):

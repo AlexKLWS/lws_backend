@@ -15,24 +15,36 @@ def get_ext_material_by_id(db: Session, id: str) -> ExtMaterial:
 
 
 def get_ext_material_previews(
-    db: Session, page_index: PageIndex, category: CategoryENUM
+    db: Session, page_index: PageIndex, category: CategoryENUM, include_hidden: bool,
 ) -> List[ExtMaterial]:
     category_record = db.query(Category).filter_by(enum_value=category.value).first()
     if category_record is None:
         return []
-    if page_index.page == 1:
-        ext_material_previews = category_record.ext_materials.filter(and_(
-            ExtMaterial.created_at >= page_index.start_date,
-            ExtMaterial.hidden.isnot(True),
-        )).all()
-        return ext_material_previews
+    if include_hidden:
+        if page_index.page == 1:
+            ext_material_previews = category_record.ext_materials.filter(
+                ExtMaterial.created_at >= page_index.start_date).all()
+            return ext_material_previews
+        else:
+            ext_material_previews = category_record.ext_materials.filter(and_(
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.created_at <= page_index.end_date,
+            )).all()
+            return ext_material_previews
     else:
-        ext_material_previews = category_record.ext_materials.filter(and_(
-            ExtMaterial.created_at >= page_index.start_date,
-            ExtMaterial.created_at <= page_index.end_date,
-            ExtMaterial.hidden.isnot(True),
-        )).all()
-        return ext_material_previews
+        if page_index.page == 1:
+            ext_material_previews = category_record.ext_materials.filter(and_(
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.hidden.isnot(True),
+            )).all()
+            return ext_material_previews
+        else:
+            ext_material_previews = category_record.ext_materials.filter(and_(
+                ExtMaterial.created_at >= page_index.start_date,
+                ExtMaterial.created_at <= page_index.end_date,
+                ExtMaterial.hidden.isnot(True),
+            )).all()
+            return ext_material_previews
 
 
 def upsert_ext_material(db: Session, ext_material_jsonified: ExtMaterialJsonified):

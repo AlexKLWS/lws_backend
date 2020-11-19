@@ -15,20 +15,31 @@ def get_article_by_id(db: Session, id: str) -> Article:
 
 
 def get_article_previews(
-    db: Session, page_index: PageIndex, category: CategoryENUM
+    db: Session, page_index: PageIndex, category: CategoryENUM, include_hidden: bool,
 ) -> List[ArticlePreview]:
     category_record = db.query(Category).filter_by(enum_value=category.value).first()
     if category_record is None:
         return []
-    if page_index.page == 1:
-        article_previews = category_record.articles.filter(
-            and_(ArticlePreview.created_at >= page_index.start_date, ArticlePreview.hidden.isnot(True))).all()
-        return article_previews
+    if include_hidden:
+        if page_index.page == 1:
+            article_previews = category_record.articles.filter(ArticlePreview.created_at >= page_index.start_date
+                                                               ).all()
+            return article_previews
+        else:
+            article_previews = category_record.articles.filter(and_(ArticlePreview.created_at >= page_index.start_date,
+                                                                    ArticlePreview.created_at <= page_index.end_date
+                                                                    )).all()
+            return article_previews
     else:
-        article_previews = category_record.articles.filter(and_(ArticlePreview.created_at >= page_index.start_date,
-                                                                ArticlePreview.created_at <= page_index.end_date,
-                                                                ArticlePreview.hidden.isnot(True))).all()
-        return article_previews
+        if page_index.page == 1:
+            article_previews = category_record.articles.filter(
+                and_(ArticlePreview.created_at >= page_index.start_date, ArticlePreview.hidden.isnot(True))).all()
+            return article_previews
+        else:
+            article_previews = category_record.articles.filter(and_(ArticlePreview.created_at >= page_index.start_date,
+                                                                    ArticlePreview.created_at <= page_index.end_date,
+                                                                    ArticlePreview.hidden.isnot(True))).all()
+            return article_previews
 
 
 def upsert_article(db: Session, article_jsonified: ArticleJsonified):
