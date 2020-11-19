@@ -15,12 +15,22 @@ router = APIRouter()
 
 
 @router.get("", response_model=Article)
-async def get_article(id: str, db: Session = Depends(get_db)):
+async def get_article(id: str, db: Session = Depends(get_db),
+                      user_auth=Depends(check_user_auth)):
     with managed_session(db) as session:
         article = get_article_by_id(session, id)
 
         if article is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Article not found")
+
+        if article.hidden:
+            exception = user_auth[1]
+            if exception:
+                raise exception
+            access_rights = user_auth[0]
+            if access_rights != UserAccessRights.READ and access_rights != UserAccessRights.WRITE:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                    detail="User doesn't have required access rights")
 
         article_response = article.get_jsonified_dict()
 
@@ -29,7 +39,11 @@ async def get_article(id: str, db: Session = Depends(get_db)):
 
 @router.post("", response_model=Article)
 async def add_or_update_article(article: Article, db: Session = Depends(get_db),
-                                access_rights=Depends(check_user_auth)):
+                                user_auth=Depends(check_user_auth)):
+    exception = user_auth[1]
+    if exception:
+        raise exception
+    access_rights = user_auth[0]
     if access_rights != UserAccessRights.WRITE:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't have required access rights")
 

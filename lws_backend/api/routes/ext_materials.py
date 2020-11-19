@@ -14,12 +14,22 @@ router = APIRouter()
 
 
 @router.get("", response_model=ExtMaterial)
-async def get_ext_material(id: str, db: Session = Depends(get_db)):
+async def get_ext_material(id: str, db: Session = Depends(get_db),
+                           user_auth=Depends(check_user_auth)):
     with managed_session(db) as session:
         ext_material = get_ext_material_by_id(session, id)
 
         if ext_material is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="External material not found")
+
+        if ext_material.hidden:
+            exception = user_auth[1]
+            if exception:
+                raise exception
+            access_rights = user_auth[0]
+            if access_rights != UserAccessRights.READ and access_rights != UserAccessRights.WRITE:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                                    detail="User doesn't have required access rights")
 
         ext_material_response = ext_material.get_jsonified_dict()
 
@@ -28,7 +38,11 @@ async def get_ext_material(id: str, db: Session = Depends(get_db)):
 
 @router.post("", response_model=ExtMaterial)
 async def add_or_update_ext_material(ext_material: ExtMaterial, db: Session = Depends(get_db),
-                                     access_rights=Depends(check_user_auth)):
+                                     user_auth=Depends(check_user_auth)):
+    exception = user_auth[1]
+    if exception:
+        raise exception
+    access_rights = user_auth[0]
     if access_rights != UserAccessRights.WRITE:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't have required access rights")
     if ext_material.referenceId is None:
