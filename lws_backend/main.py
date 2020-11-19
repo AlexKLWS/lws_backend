@@ -25,7 +25,11 @@ origins = [
 def get_application() -> FastAPI:
     prepare_database(config.get(DB_CONNECTION_URI))
 
-    main = FastAPI(version=config.get(VERSION), debug=config.get(IS_DEBUG))
+    if config.get(IS_DEBUG):
+        main = FastAPI(version=config.get(VERSION), debug=True)
+    else:
+        main = FastAPI(version=config.get(VERSION), debug=False, docs_url=None, redoc_url=None, openapi_url=None)
+
     main.include_router(api.router, prefix=API_PREFIX)
 
     main.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True,
