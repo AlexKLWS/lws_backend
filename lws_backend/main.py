@@ -1,6 +1,9 @@
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from starlette.responses import FileResponse
+from fastapi.middleware.gzip import GZipMiddleware
 
 from lws_backend.core.config import (
     VERSION,
@@ -14,8 +17,6 @@ from lws_backend.core.config import (
 from lws_backend.database import prepare_database
 from lws_backend.api.routes import api
 from lws_backend.config import config
-from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
 
 origins = [
     "http://localhost:3000",
@@ -47,6 +48,8 @@ def get_application() -> FastAPI:
 
 
 app = get_application()
+
+app.add_middleware(GZipMiddleware)
 
 
 @app.middleware("http")
