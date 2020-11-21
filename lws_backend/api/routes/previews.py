@@ -16,8 +16,8 @@ router = APIRouter()
 
 @router.get("", response_model=PreviewResponse)
 async def get_previews(
-        category: Category, page: int = 1, include_hidden: Optional[bool] = False, db: Session = Depends(get_managed_session),
-        user_auth=Depends(check_user_auth)):
+        category: Category, page: int = 1, include_hidden: Optional[bool] = False,
+        db: Session = Depends(get_managed_session), user_auth=Depends(check_user_auth)):
 
     if include_hidden:
         exception = user_auth[1]
