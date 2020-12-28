@@ -52,5 +52,6 @@ async def add_files(referenceId: str = Form(...), file: UploadFile = File(...),
 
     with open(file_path, "wb") as f:
         f.write(file.file.read())
+    os.chmod(file_path, 0o755)
 
     return file_path
