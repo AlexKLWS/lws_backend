@@ -14,7 +14,11 @@ router = APIRouter()
 
 
 @router.put("/metadata")
-async def add_metadata(metadataRequest: FileMetadataPostRequest, access_rights=Depends(check_user_auth)):
+async def add_metadata(metadataRequest: FileMetadataPostRequest, user_auth=Depends(check_user_auth)):
+    exception = user_auth[1]
+    if exception:
+        raise exception
+    access_rights = user_auth[0]
     if access_rights != UserAccessRights.WRITE:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't have required access rights")
 
@@ -26,7 +30,11 @@ async def add_metadata(metadataRequest: FileMetadataPostRequest, access_rights=D
 
 @router.put("")
 async def add_files(referenceId: str = Form(...), file: UploadFile = File(...),
-                    access_rights=Depends(check_user_auth)):
+                    user_auth=Depends(check_user_auth)):
+    exception = user_auth[1]
+    if exception:
+        raise exception
+    access_rights = user_auth[0]
     if access_rights != UserAccessRights.WRITE:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User doesn't have required access rights")
 
