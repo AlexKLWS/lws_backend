@@ -14,6 +14,8 @@ from lws_backend.database import Session
 
 def get_page_index(db: Session, pageNumber: int, category: CategoryENUM) -> PageIndex:
     category_record = db.query(Category).filter_by(enum_value=category.value).first()
+    if category_record is None:
+        return None
     return (
         db.query(PageIndex)
         .filter(
@@ -25,6 +27,8 @@ def get_page_index(db: Session, pageNumber: int, category: CategoryENUM) -> Page
 
 def get_pages_count(db: Session, category: CategoryENUM) -> int:
     category_record = db.query(Category).filter_by(enum_value=category.value).first()
+    if category_record is None:
+        return 1
     return db.query(PageIndex).filter(PageIndex.category_id == category_record.id).count()
 
 
