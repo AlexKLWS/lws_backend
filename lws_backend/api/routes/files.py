@@ -44,6 +44,7 @@ async def add_files(referenceId: str = Form(...), file: UploadFile = File(...),
         dir = os.path.join(dir, file_metadata.folder)
         if not os.path.exists(dir):
             os.makedirs(dir, exist_ok=True)
+            os.chmod(dir, 0o755)
 
     file_format = file.filename.split(".")[-1]
     file_name = file_metadata.newName + "." + file_format if file_metadata.newName else file.filename
@@ -52,6 +53,6 @@ async def add_files(referenceId: str = Form(...), file: UploadFile = File(...),
 
     with open(file_path, "wb") as f:
         f.write(file.file.read())
-    os.chmod(file_path, 0o755)
+    os.chmod(file_path, 0o644)
 
     return file_path
