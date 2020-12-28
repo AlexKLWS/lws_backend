@@ -38,6 +38,7 @@ def get_application() -> FastAPI:
 
     if not os.path.exists(ASSETS_PATH):
         os.mkdir(ASSETS_PATH)
+        os.chmod(ASSETS_PATH, 0o755)
     main.mount(ASSETS_PREFIX, StaticFiles(directory=ASSETS_PATH))
 
     if not os.path.exists(CLIENT_PATH):
