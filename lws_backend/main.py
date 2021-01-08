@@ -20,6 +20,7 @@ from lws_backend.config import config
 
 origins = [
     "http://localhost:3000",
+    "http://localhost:45678"
 ]
 
 
