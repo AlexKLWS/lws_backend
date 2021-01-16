@@ -1,4 +1,5 @@
 import os
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -25,6 +26,9 @@ origins = [
 
 
 def get_application() -> FastAPI:
+    format = "%(asctime)s: %(message)s"
+    logging.basicConfig(format=format, level=logging.DEBUG if config.get(IS_DEBUG) else logging.INFO,
+                        datefmt="%H:%M:%S")
     prepare_database(config.get(DB_CONNECTION_URI))
 
     if config.get(IS_DEBUG):
