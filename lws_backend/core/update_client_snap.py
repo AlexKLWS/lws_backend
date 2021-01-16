@@ -50,11 +50,9 @@ def update_client_snap():
         logging.info('Couldnt install all dependencies! Aborting...')
         return
 
-    puppeteer_fix_script = f'{CLIENT_SOURCE_PATH}/lws-blog/scripts/add-puppeteer-sandbox-args.sh'
+    os.chmod(f'{CLIENT_SOURCE_PATH}/lws-blog/scripts/add-puppeteer-sandbox-args.sh', 0o755)
 
-    os.chmod(puppeteer_fix_script, 0o755)
-
-    puppeteer_fix_process = run_process(puppeteer_fix_script, './')
+    puppeteer_fix_process = run_process('scripts/add-puppeteer-sandbox-args.sh', f'{CLIENT_SOURCE_PATH}/lws-blog/')
 
     if puppeteer_fix_process.returncode:
         logging.info('Couldnt run puppeteer fix! Aborting...')
