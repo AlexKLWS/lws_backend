@@ -53,6 +53,6 @@ async def add_or_update_ext_material(ext_material: ExtMaterial, db: Session = De
     upsert_ext_material(db, ext_material)
     update_index(db, ext_material.categories)
     updater = ClientSnapUpdater.get_or_create_updater()
-    updater.update()
+    updater.run_non_blocking_update()
 
     return ext_material

@@ -55,6 +55,6 @@ async def add_or_update_article(article: Article, db: Session = Depends(get_mana
     upsert_article(db, article)
     update_index(db, article.categories)
     updater = ClientSnapUpdater.get_or_create_updater()
-    updater.update()
+    updater.run_non_blocking_update()
 
     return article

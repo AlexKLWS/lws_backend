@@ -58,6 +58,6 @@ async def add_or_update_guide(guide: Guide, db: Session = Depends(get_managed_se
     upsert_guide(db, guide)
     update_index(db, guide.categories)
     updater = ClientSnapUpdater.get_or_create_updater()
-    updater.update()
+    updater.run_non_blocking_update()
 
     return guide

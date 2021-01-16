@@ -20,7 +20,7 @@ class ClientSnapUpdater:
     def __init__(self):
         self.updater_lock = threading.Lock()
 
-    def update(self):
+    def run_non_blocking_update(self):
         t = threading.Thread(target=self.update_client_snap_thread_safe, daemon=True)
         t.start()
 
