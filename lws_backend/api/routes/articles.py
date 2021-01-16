@@ -9,6 +9,7 @@ from lws_backend.api.dependencies.authorization import check_user_auth
 from lws_backend.crud.articles import upsert_article
 from lws_backend.pydantic_models.user_access_rights import UserAccessRights
 from lws_backend.crud.page_index import update_index
+from lws_backend.core.update_client_snap import ClientSnapUpdater
 
 router = APIRouter()
 
@@ -53,5 +54,7 @@ async def add_or_update_article(article: Article, db: Session = Depends(get_mana
 
     upsert_article(db, article)
     update_index(db, article.categories)
+    updater = ClientSnapUpdater.get_or_create_updater()
+    updater.update()
 
     return article
