@@ -10,8 +10,7 @@ from lws_backend.core.config import (
     DB_CONNECTION_URI,
     API_PREFIX,
     ASSETS_PREFIX,
-    ASSETS_PATH,
-    CLIENT_PATH
+    ASSETS_PATH
 )
 from lws_backend.database import prepare_database
 from lws_backend.api.routes import api
