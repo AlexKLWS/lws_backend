@@ -8,7 +8,6 @@ from lws_backend.pydantic_models.category import Category
 from lws_backend.api.dependencies.authorization import check_user_auth
 from lws_backend.pydantic_models.user_access_rights import UserAccessRights
 from lws_backend.crud.page_index import update_index
-from lws_backend.core.update_client_snap import ClientSnapUpdater
 
 router = APIRouter()
 
@@ -52,7 +51,5 @@ async def add_or_update_ext_material(ext_material: ExtMaterial, db: Session = De
 
     upsert_ext_material(db, ext_material)
     update_index(db, ext_material.categories)
-    updater = ClientSnapUpdater.get_or_create_updater()
-    updater.run_non_blocking_update()
 
     return ext_material

@@ -13,7 +13,6 @@ CONFIG_FILE_NAME = "config.yaml"
 API_PREFIX = "/api"
 ASSETS_PREFIX = "/assets"
 ASSETS_PATH = "assets"
-CLIENT_PATH = "client"
 CLIENT_SOURCE_PATH = "client_source"
 ALGORITHM = "HS256"
 

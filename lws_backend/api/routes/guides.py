@@ -8,7 +8,6 @@ from lws_backend.pydantic_models.category import Category
 from lws_backend.api.dependencies.authorization import check_user_auth
 from lws_backend.pydantic_models.user_access_rights import UserAccessRights
 from lws_backend.crud.page_index import update_index
-from lws_backend.core.update_client_snap import ClientSnapUpdater
 
 router = APIRouter()
 
@@ -57,7 +56,5 @@ async def add_or_update_guide(guide: Guide, db: Session = Depends(get_managed_se
 
     upsert_guide(db, guide)
     update_index(db, guide.categories)
-    updater = ClientSnapUpdater.get_or_create_updater()
-    updater.run_non_blocking_update()
 
     return guide
