@@ -3,8 +3,6 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
-from fastapi.middleware.gzip import GZipMiddleware
 
 from lws_backend.core.config import (
     VERSION,
@@ -20,8 +18,7 @@ from lws_backend.api.routes import api
 from lws_backend.config import config
 
 origins = [
-    "http://localhost:3000",
-    "http://localhost:45678"
+    "http://localhost:3000"
 ]
 
 
@@ -46,21 +43,7 @@ def get_application() -> FastAPI:
         os.chmod(ASSETS_PATH, 0o755)
     main.mount(ASSETS_PREFIX, StaticFiles(directory=ASSETS_PATH))
 
-    if not os.path.exists(CLIENT_PATH):
-        os.mkdir(CLIENT_PATH)
-    main.mount("/", StaticFiles(directory=CLIENT_PATH))
-
     return main
 
 
 app = get_application()
-
-app.add_middleware(GZipMiddleware)
-
-
-@app.middleware("http")
-async def redirect_to_index(request, call_next):
-    response = await call_next(request)
-    if response.status_code == 404:
-        return FileResponse(os.path.join(CLIENT_PATH, "index.html"))
-    return response
