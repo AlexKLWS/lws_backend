@@ -17,7 +17,8 @@ from lws_backend.api.routes import api
 from lws_backend.config import config
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://longwintershadows.com",
 ]
 
 
