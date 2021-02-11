@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, JSON, ForeignKey
+from sqlalchemy import Column, String, Integer, JSON, ForeignKey, Text
 
 from lws_backend.database_models.base import DatabaseBaseModel
 from lws_backend.pydantic_models.guide import GuideLocationInfo as GuideLocationInfoJsonified
@@ -13,7 +13,7 @@ class GuideLocationInfo(DatabaseBaseModel):
     coordinates = Column(JSON)
     address = Column(String)
     title = Column(String)
-    description = Column(String)
+    description = Column(Text)
     image_url = Column(String)
 
     def get_jsonified_dict(self):

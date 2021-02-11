@@ -7,4 +7,5 @@ class ArticlePreview(Material):
 
 
 class Article(ArticlePreview):
+    metaDescription: str
     articleText: str

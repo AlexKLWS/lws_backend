@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, Boolean, String, Table, JSON
+from sqlalchemy import Column, ForeignKey, Integer, Boolean, String, Table, Text, JSON
 from sqlalchemy.orm import relationship
 
 from lws_backend.database import Base
@@ -75,13 +75,15 @@ class GuidePreview(GuideBase):
 
 
 class Guide(GuidePreview):
+    meta_description = Column(Text)
     locations = relationship(GuideLocationInfo, lazy="joined", cascade="all, delete-orphan")
     default_zoom = Column(Integer)
     default_center = Column(JSON)
-    info = Column(String)
+    info = Column(Text)
 
     def get_jsonified_dict(self):
         transferable = super().get_jsonified_dict()
+        transferable["metaDescription"] = self.meta_description
         transferable["info"] = self.info
         transferable["defaultZoom"] = self.default_zoom
         transferable["defaultCenter"] = self.default_center
@@ -93,4 +95,5 @@ class Guide(GuidePreview):
         self.info = g.info
         self.default_zoom = g.defaultZoom
         self.default_center = g.defaultCenter.get_jsonified_dict()
+        self.meta_description = g.metaDescription
         return self

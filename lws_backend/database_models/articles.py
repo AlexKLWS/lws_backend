@@ -72,14 +72,17 @@ class ArticlePreview(ArticleBase):
 
 
 class Article(ArticlePreview):
+    meta_description = Column(Text)
     article_text = Column(Text)
 
     def get_jsonified_dict(self):
         transferable = super().get_jsonified_dict()
         transferable["articleText"] = self.article_text
+        transferable["metaDescription"] = self.meta_description
         return transferable
 
     def from_jsonified_dict(self, a: ArticleJsonified):
         super().from_jsonified_dict(a)
         self.article_text = a.articleText
+        self.meta_description = a.metaDescription
         return self
