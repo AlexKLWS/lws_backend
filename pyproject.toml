@@ -23,6 +23,7 @@ uuid = "^1.30"
 gunicorn = "^20.0.4"
 uvloop = "^0.14.0"
 httptools = "^0.1.1"
+alembic = "^1.5.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.1"
