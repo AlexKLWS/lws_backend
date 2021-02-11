@@ -41,7 +41,7 @@ class GuidePreview(Material):
 
 
 class Guide(GuidePreview):
-    metaDescription: str
+    metaDescription: Optional[str] = None
     info: str
     defaultZoom: int
     defaultCenter: LocationCoords
