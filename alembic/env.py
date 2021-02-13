@@ -12,7 +12,10 @@ from lws_backend.config import config as lws_config
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option('sqlalchemy.url', lws_config.get(DB_CONNECTION_URI))
+
+db_url = lws_config.get(DB_CONNECTION_URI)
+db_url = db_url.replace('%', '%%')
+config.set_main_option('sqlalchemy.url', db_url)
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
