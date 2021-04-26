@@ -7,3 +7,4 @@ class Category(IntEnum):
     CODE = 2
     GUIDES = 3
     PROJECTS = 4
+    GAMES = 5
