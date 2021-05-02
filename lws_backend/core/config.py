@@ -12,7 +12,7 @@ from watchdog.events import FileSystemEventHandler
 CONFIG_FILE_NAME = "config.yaml"
 API_PREFIX = "/api"
 ASSETS_PREFIX = "/assets"
-ASSETS_PATH = "assets"
+ASSETS_PATH = "/assets"
 CLIENT_SOURCE_PATH = "client_source"
 ALGORITHM = "HS256"
 
