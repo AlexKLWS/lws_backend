@@ -30,6 +30,7 @@ class ArticleBase(DatabaseBaseModel):
     subtitle = Column(String)
     category = Column(Integer, default=0)
     hidden = Column(Boolean)
+    secret = Column(Boolean)
 
     categories = relationship(
         "Category",
@@ -44,6 +45,7 @@ class ArticleBase(DatabaseBaseModel):
             "subtitle": self.subtitle,
             "categories": [category.enum_value for category in self.categories],
             "hidden": self.hidden,
+            "secret": self.secret,
         }
 
     def from_jsonified_dict(self, a: ArticleJsonified):
@@ -51,6 +53,7 @@ class ArticleBase(DatabaseBaseModel):
         self.name = a.name
         self.subtitle = a.subtitle
         self.hidden = a.hidden
+        self.secret = a.secret
         if a.createdAt is not None:
             self.created_at = a.createdAt
         return self

@@ -12,3 +12,4 @@ class Material(BaseModel):
     subtitle: str
     categories: List[Category]
     hidden: bool
+    secret: bool

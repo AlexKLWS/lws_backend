@@ -29,6 +29,7 @@ class ExtMaterial(DatabaseBaseModel):
     name = Column(String)
     subtitle = Column(String)
     hidden = Column(Boolean)
+    secret = Column(Boolean)
     url = Column(String)
     icon_id = Column(Integer, ForeignKey("icons.id"))
 
@@ -45,6 +46,7 @@ class ExtMaterial(DatabaseBaseModel):
             "name": self.name,
             "subtitle": self.subtitle,
             "hidden": self.hidden,
+            "secret": self.secret,
             "url": self.url,
             "categories": [category.enum_value for category in self.categories],
             "icon": self.icon.get_jsonified_dict()
@@ -56,6 +58,7 @@ class ExtMaterial(DatabaseBaseModel):
         self.subtitle = e.subtitle
         self.url = e.url
         self.hidden = e.hidden
+        self.secret = e.secret
         if e.createdAt is not None:
             self.created_at = e.createdAt
         return self

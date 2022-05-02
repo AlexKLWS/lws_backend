@@ -30,6 +30,7 @@ class GuideBase(DatabaseBaseModel):
     name = Column(String)
     subtitle = Column(String)
     hidden = Column(Boolean)
+    secret = Column(Boolean)
     is_guide_material = Column(Boolean)
 
     categories = relationship(
@@ -45,6 +46,7 @@ class GuideBase(DatabaseBaseModel):
             "subtitle": self.subtitle,
             "categories": [category.enum_value for category in self.categories],
             "hidden": self.hidden,
+            "secret": self.secret,
             "isGuideMaterial": self.is_guide_material
         }
 
@@ -53,6 +55,7 @@ class GuideBase(DatabaseBaseModel):
         self.name = g.name
         self.subtitle = g.subtitle
         self.hidden = g.hidden
+        self.secret = g.secret
         self.is_guide_material = g.isGuideMaterial
         if g.createdAt is not None:
             self.created_at = g.createdAt
