@@ -41,11 +41,11 @@ def update_index(db: Session, categories: List[CategoryENUM]):
             all_materials.append(a)
 
         ext_materials = category_record.ext_materials.filter(ExtMaterial.hidden.isnot(True),
-                                                             Article.secret.isnot(True))
+                                                             ExtMaterial.secret.isnot(True))
         for e in ext_materials:
             all_materials.append(e)
 
-        guides = category_record.guides.filter(Guide.hidden.isnot(True), Article.secret.isnot(True))
+        guides = category_record.guides.filter(Guide.hidden.isnot(True), Guide.secret.isnot(True))
         for g in guides:
             all_materials.append(g)
 

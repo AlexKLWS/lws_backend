@@ -36,6 +36,7 @@ def get_ext_material_previews(
             ext_material_previews = category_record.ext_materials.filter(and_(
                 ExtMaterial.created_at >= page_index.start_date,
                 ExtMaterial.hidden.isnot(True),
+                ExtMaterial.secret.isnot(True),
             )).all()
             return ext_material_previews
         else:
@@ -43,6 +44,7 @@ def get_ext_material_previews(
                 ExtMaterial.created_at >= page_index.start_date,
                 ExtMaterial.created_at <= page_index.end_date,
                 ExtMaterial.hidden.isnot(True),
+                ExtMaterial.secret.isnot(True),
             )).all()
             return ext_material_previews
 

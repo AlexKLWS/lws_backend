@@ -33,12 +33,14 @@ def get_article_previews(
     else:
         if page_index.page == 1:
             article_previews = category_record.articles.filter(
-                and_(ArticlePreview.created_at >= page_index.start_date, ArticlePreview.hidden.isnot(True))).all()
+                and_(ArticlePreview.created_at >= page_index.start_date, ArticlePreview.hidden.isnot(True),
+                     ArticlePreview.secret.isnot(True))).all()
             return article_previews
         else:
             article_previews = category_record.articles.filter(and_(ArticlePreview.created_at >= page_index.start_date,
                                                                     ArticlePreview.created_at <= page_index.end_date,
-                                                                    ArticlePreview.hidden.isnot(True))).all()
+                                                                    ArticlePreview.hidden.isnot(True),
+                                                                    ArticlePreview.secret.isnot(True))).all()
             return article_previews
 
 
