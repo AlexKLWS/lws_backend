@@ -36,15 +36,16 @@ def update_index(db: Session, categories: List[CategoryENUM]):
     for category in categories:
         all_materials = []
         category_record = db.query(Category).filter_by(enum_value=category.value).first()
-        articles = category_record.articles.filter(Article.hidden.isnot(True))
+        articles = category_record.articles.filter(Article.hidden.isnot(True), Article.secret.isnot(True))
         for a in articles:
             all_materials.append(a)
 
-        ext_materials = category_record.ext_materials.filter(ExtMaterial.hidden.isnot(True))
+        ext_materials = category_record.ext_materials.filter(ExtMaterial.hidden.isnot(True),
+                                                             Article.secret.isnot(True))
         for e in ext_materials:
             all_materials.append(e)
 
-        guides = category_record.guides.filter(Guide.hidden.isnot(True))
+        guides = category_record.guides.filter(Guide.hidden.isnot(True), Article.secret.isnot(True))
         for g in guides:
             all_materials.append(g)
 
